@@ -19,6 +19,7 @@ Object.assign(module.exports, heuristics);
  * `find(fromId, toId)`, it may be extended in future.
  * 
  * @param {ngraph.graph} graph instance. See https://github.com/anvaka/ngraph.graph
+ * 
  * @param {Object} options that configures search
  * @param {Function(a, b)} options.heuristic - a function that returns estimated distance between
  * nodes `a` and `b`. This function should never overestimate actual distance between two
@@ -26,6 +27,9 @@ Object.assign(module.exports, heuristics);
  * which makes this search equivalent to Dijkstra search.
  * @param {Function(a, b)} options.distance - a function that returns actual distance between two
  * nodes `a` and `b`. By default this is set to return graph-theoretical distance (always 1);
+ * 
+ * @param {Boolean} quitFast - if set to true, the bidirectional search quits as soon two searches
+ * meet. This does not guarantee the optimal global path!
  * 
  * @returns {Object} A pathfinder with single method `find()`.
  */
@@ -39,6 +43,8 @@ function aStarBi(graph, options) {
 
   var distance = options.distance;
   if (!distance) distance = defaultSettings.distance;
+
+  var quitFast = options.quitFast;
 
   return {
     find: find
@@ -110,7 +116,17 @@ function aStarBi(graph, options) {
       if (current.distanceToSource > lMin) continue;
 
       graph.forEachLinkedNode(current.node.id, callVisitor, oriented);
+
+      if (quitFast && minFrom && minTo) {
+        break;
+      }
     }
+
+    if (minFrom && minTo) {
+      return reconstructBiDirectionalPath(minFrom, minTo);
+    }
+
+    return NO_PATH; // No path.
 
     function callVisitor(otherNode, link) {
       return visitNode(otherNode, link, current);
@@ -196,11 +212,5 @@ function aStarBi(graph, options) {
       otherSearchState.parent = cameFrom;
       otherSearchState.distanceToSource = tentativeDistance;
     }
-
-    if (minFrom && minTo) {
-      return reconstructBiDirectionalPath(minFrom, minTo);
-    }
-
-    return NO_PATH; // No path.
   }
 }
