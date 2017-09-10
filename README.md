@@ -36,7 +36,7 @@ graph.addLink('c', 'd', {weight: 5});
 graph.addLink('b', 'd', {weight: 10});
 ```
 
-![weighted](https://raw.githubusercontent.com/anvaka/ngraph.path/master/doc/weighted.svg)
+![weighted](https://raw.githubusercontent.com/anvaka/ngraph.path/master/docs/weighted.png)
 
 
 # license
