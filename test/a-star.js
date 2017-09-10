@@ -1,7 +1,97 @@
 var test = require('tap').test;
 var aStar = require('../').aStar;
+var aStarBi = require('../').aStarBi;
+var createGraph = require('ngraph.graph');
 var fromDot = require('ngraph.fromdot');
-var asciiUtils = require('./graphFromAscii');
+var asciiUtils = require('./utils/graphFromAscii');
+
+test('it can find weighted', t => {
+  let createGraph = require('ngraph.graph');
+  let graph = createGraph();
+
+  graph.addLink('a', 'b', {weight: 10});
+  graph.addLink('a', 'c', {weight: 10});
+  graph.addLink('c', 'd', {weight: 5});
+  graph.addLink('b', 'd', {weight: 10});
+
+
+  var pathFinder = aStar(graph, {
+    distance(a, b, link) {
+      return link.data.weight;
+    }
+  });
+  let path = pathFinder.find('a', 'd');
+
+  t.equals(path[0].id, 'd', 'd is here');
+  t.equals(path[1].id, 'c', 'c is here');
+  t.equals(path[2].id, 'a', 'a is here');
+  t.end();
+});
+
+test('it can use heuristic', t => {
+  let createGraph = require('ngraph.graph');
+  let graph = createGraph();
+
+  // Our graph has cities:
+  graph.addNode('NYC', {x: 0, y: 0});
+  graph.addNode('Boston', {x: 1, y: 1});
+  graph.addNode('Philadelphia', {x: -1, y: -1});
+  graph.addNode('Washington', {x: -2, y: -2});
+
+  // and railroads:
+  graph.addLink('NYC', 'Boston');
+  graph.addLink('NYC', 'Philadelphia');
+  graph.addLink('Philadelphia', 'Washington');
+
+  var pathFinder = aStar(graph, {
+    distance(fromNode, toNode) {
+      // In this case we have coordinates. Lets use them as
+      // distance between two nodes:
+      let dx = fromNode.data.x - toNode.data.x;
+      let dy = fromNode.data.y - toNode.data.y;
+
+      return Math.sqrt(dx * dx + dy * dy);
+    },
+    heuristic(fromNode, toNode) {
+      // this is where we "guess" distance between two nodes.
+      // In this particular case our guess is the same as our distance
+      // function:
+      let dx = fromNode.data.x - toNode.data.x;
+      let dy = fromNode.data.y - toNode.data.y;
+
+      return Math.sqrt(dx * dx + dy * dy);
+    }
+  });
+  let path = pathFinder.find('NYC', 'Washington');
+
+  t.equals(path[0].id, 'Washington', 'Washington is here');
+  t.equals(path[1].id, 'Philadelphia', 'Philadelphia is here');
+  t.equals(path[2].id, 'NYC', 'NYC is here');
+  t.end();
+})
+
+test('it can find path without any config', t => {
+  var graph = fromDot(`digraph G {
+    a -> b
+    b -> c
+    b -> d
+    c -> d
+  }`);
+
+  var pathFinder = aStar(graph);
+  let path = pathFinder.find('a', 'c');
+  t.equals(path[0].id, 'c', 'c is here');
+  t.equals(path[1].id, 'b', 'b is here');
+  t.equals(path[2].id, 'a', 'a is here');
+
+  var pathFinderBi = aStarBi(graph);
+  var pathBi = pathFinderBi.find('a', 'c');
+  t.equals(pathBi[0].id, 'c', 'c is here');
+  t.equals(pathBi[1].id, 'b', 'b is here');
+  t.equals(pathBi[2].id, 'a', 'a is here');
+
+  t.end();
+})
 
 test('it can find paths', (t) => {
   var graph = fromDot(`digraph G {

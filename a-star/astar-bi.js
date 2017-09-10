@@ -145,12 +145,12 @@ function aStarBi(graph, options) {
       var pathOfNodes = [];
       var aParent = a;
       while(aParent) {
-        pathOfNodes.push(aParent.node);
+        pathOfNodes.unshift(aParent.node);
         aParent = aParent.parent;
       }
       var bParent = b;
       while (bParent) {
-        pathOfNodes.unshift(bParent.node);
+        pathOfNodes.push(bParent.node);
         bParent = bParent.parent
       }
       return pathOfNodes;
