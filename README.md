@@ -82,7 +82,7 @@ graph.addLink('Philadelphia', 'Washington');
 
 ![guided](https://raw.githubusercontent.com/anvaka/ngraph.path/master/docs/guided.png)
 
-When we build shortest path here, from NYC to Washington, we want to tell the pathfinder
+When we build the shortest path from NYC to Washington, we want to tell the pathfinder
 that it should prefer Philadelphia over Boston.
 
 ``` js
@@ -108,10 +108,10 @@ var pathFinder = aStar(graph, {
 let path = pathFinder.find('NYC', 'Washington');
 ```
 
-With this simple heuristic our path-finding algorithm becomes smarter and converges significantly faster.
+With this simple heuristic our algorithm becomes smarter and faster.
 
-It is very important that our heuristic function does not overestimate actual between two nodes. If it does
-so, then algorithm cannot guarantee the shortest path.
+It is very important that our heuristic function does not overestimate actual distance
+between two nodes. If it does so, then algorithm cannot guarantee the shortest path.
 
 TODO: expand on this section
 
