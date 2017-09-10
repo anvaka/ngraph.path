@@ -58,7 +58,7 @@ This code will correctly print a path: `d <- c <- a`.
 
 When pathfinder searches for a path between two nodes it considers all
 neighbors of a given node without any preference. In some cases we may want to
-guide pathfinder and tell it our preferred exploration direction.
+guide the pathfinder and tell it our preferred exploration direction.
 
 For example, when each node in a graph has coordinates, we can assume that 
 nodes that are closer towards the path-finder's target should be explored 
