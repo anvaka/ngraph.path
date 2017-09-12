@@ -113,6 +113,30 @@ With this simple heuristic our algorithm becomes smarter and faster.
 It is very important that our heuristic function does not overestimate actual distance
 between two nodes. If it does so, then algorithm cannot guarantee the shortest path.
 
+# Performance
+
+I measured performance of this implementation on New York City roads graph (733,844 edges, 264,346 nodes).
+It was done by solving 250 random path finding problems. Each algorithm was solving
+the same set of problems.
+
+|                                        | Average | Median | Min | Max   | p90   | p99   |
+|----------------------------------------|---------|:------:|:---:|-------|-------|-------|
+|       A*, bidirectional (local optima) |   32ms  |  24ms  | 0ms | 132ms |  71ms | 131ms |
+|      A*, bidirectional (global optima) |   61ms  |  48ms  | 0ms | 319ms | 133ms | 295ms |
+|      A*, unidirectional                |   59ms  |  39ms  | 0ms | 354ms | 137ms | 354ms |
+|      Dijkstra, unidirectional          |  272ms  | 264ms  | 0ms | 733ms | 505ms | 587ms |
+| Dijkstra, bidirectional (global optima)|  269ms  | 253ms  | 1ms | 668ms | 500ms | 607ms |
+| Dijkstra, bidirectional (local optima) |  158ms  | 143ms  | 0ms | 441ms | 313ms | 392ms |
+
+"Local optima" in bidirectional search converged the fastest, however, as name implies the found
+path is not necessary globally optimal. In local optima problems we stop the finder as soon as
+two searches intersect.
+
+I did implement bidirectional globally optimal finder, but looking at these results I think I
+might be missing something - I'd like to see better gains on bidirectional search.
+
+# Which method to choose?
+
 TODO: expand on this section
 
 # license
