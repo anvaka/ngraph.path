@@ -1,3 +1,8 @@
+/**
+ * This class represents a single search node in the exploration tree.
+ * 
+ * @param {Object} node  original node in the graph
+ */
 var NodeSearchState = function NodeSearchState(node) {
   this.node = node;
 

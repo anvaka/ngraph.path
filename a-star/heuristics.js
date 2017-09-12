@@ -10,8 +10,8 @@ module.exports = {
  * @param {*} b 
  */
 function l2(a, b) {
-  let dx = a.x - b.x;
-  let dy = a.y - b.y;
+  var dx = a.x - b.x;
+  var dy = a.y - b.y;
   return Math.sqrt(dx * dx + dy * dy);
 }
 
@@ -21,7 +21,7 @@ function l2(a, b) {
  * @param {*} b 
  */
 function l1(a, b) {
-  let dx = a.x - b.x;
-  let dy = a.y - b.y;
+  var dx = a.x - b.x;
+  var dy = a.y - b.y;
   return Math.abs(dx) + Math.abs(dy);
 }
