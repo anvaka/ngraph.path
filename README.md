@@ -41,7 +41,7 @@ graph.addLink('b', 'd', {weight: 10});
 We want to find a path with the smallest possible weight:
 
 ``` js
-var pathFinder = aStar(graph, {
+let pathFinder = aStar(graph, {
   // We tell our pathfinder what should it use as a distance function:
   distance(fromNode, toNode, link) {
     // We don't really care about from/to nodes in this case,
@@ -86,7 +86,7 @@ When we build the shortest path from NYC to Washington, we want to tell the path
 that it should prefer Philadelphia over Boston.
 
 ``` js
-var pathFinder = aStar(graph, {
+let pathFinder = aStar(graph, {
   distance(fromNode, toNode) {
     // In this case we have coordinates. Lets use them as
     // distance between two nodes:
@@ -144,12 +144,7 @@ might be missing something - I'd like to see better gains on bidirectional searc
 With many options available, it may be confusing whether to pick Dijkstra or A*.
 
 I would pick Dijkstra if there is no way to guess a distance between two arbitrary nodes
-in a graph.
-
-If, on the other hand, we can guess distance between two nodes - pick A*.
-
- 
-
+in a graph. If we can guess distance between two nodes - pick A*.
 
 # license
 
