@@ -1,6 +1,6 @@
 # ngraph.path
 
-Fast path finding in graphs.
+Fast path finding in graphs. TODO: Link the demo
 
 # usage
 
@@ -115,9 +115,13 @@ between two nodes. If it does so, then algorithm cannot guarantee the shortest p
 
 # Performance
 
+Internally, I'm using heap-based priority queue, built specifically for path finding.
+I modified it, so that changing priority of any element in the queue takes `O(lg n)`
+time.
+
 I measured performance of this implementation on New York City roads graph (733,844 edges, 264,346 nodes).
 It was done by solving 250 random path finding problems. Each algorithm was solving
-the same set of problems.
+the same set of problems. Table below shows required time to solve one problem.
 
 |                                        | Average | Median | Min | Max   | p90   | p99   |
 |----------------------------------------|---------|:------:|:---:|-------|-------|-------|
@@ -137,7 +141,15 @@ might be missing something - I'd like to see better gains on bidirectional searc
 
 # Which method to choose?
 
-TODO: expand on this section
+With many options available, it may be confusing whether to pick Dijkstra or A*.
+
+I would pick Dijkstra if there is no way to guess a distance between two arbitrary nodes
+in a graph.
+
+If, on the other hand, we can guess distance between two nodes - pick A*.
+
+ 
+
 
 # license
 
