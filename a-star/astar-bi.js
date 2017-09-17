@@ -38,8 +38,9 @@ function aStarBi(graph, options) {
   // whether traversal should be considered over oriented graph.
   var oriented = options.oriented;
 
-  var heuristic = options.heuristic;
-  if (!heuristic) heuristic = defaultSettings.heuristic;
+  var originalH = options.heuristic || defaultSettings.heuristic
+  // var heuristic = options.heuristic;
+  // if (!heuristic) heuristic = defaultSettings.heuristic;
 
   var distance = options.distance;
   if (!distance) distance = defaultSettings.distance;
@@ -47,10 +48,14 @@ function aStarBi(graph, options) {
   var quitFast = options.quitFast;
 
   return {
-    find: find
+    find: find,
   };
 
-  function find(fromId, toId) {
+  // function heuristic(v, target, u) {
+  //   return originalH(v, target) - originalH(u, target);
+  // }
+
+  function find(fromId, toId, returnState) {
     // Not sure if we should return NO_PATH or throw. Throw seem to be more
     // helpful to debug errors. So, throwing.
     var from = graph.getNode(fromId);
@@ -73,19 +78,18 @@ function aStarBi(graph, options) {
       setNodeId: defaultSettings.setHeapIndex
     });
 
-
     var startNode = new NodeSearchState(from);
     nodeState.set(fromId, startNode);
 
     // For the first node, fScore is completely heuristic.
-    startNode.fScore = heuristic(from, to);
+    startNode.fScore = pf(from); // 0; // heuristic(from, to);
     // The cost of going from start to start is zero.
     startNode.distanceToSource = 0;
     openSetFrom.push(startNode);
     startNode.open = BY_FROM;
 
     var endNode = new NodeSearchState(to);
-    endNode.fScore = heuristic(to, from);
+    endNode.fScore = pf(to); // heuristic(to, from);
     endNode.distanceToSource = 0;
     openSetTo.push(endNode);
     endNode.open = BY_TO;
@@ -122,38 +126,23 @@ function aStarBi(graph, options) {
       }
     }
 
-    if (minFrom && minTo) {
-      return reconstructBiDirectionalPath(minFrom, minTo);
+    var path = (minFrom && minTo) ? reconstructBiDirectionalPath(minFrom, minTo) : NO_PATH;
+
+    if (returnState) {
+      return {
+        path: path,
+        nodeState: nodeState
+      }
     }
 
-    return NO_PATH; // No path.
+    return path; // No path.
 
     function callVisitor(otherNode, link) {
       return visitNode(otherNode, link, current);
     }
 
-    function canExit(currentNode) {
-      var opener = currentNode.open
-      if (opener && opener !== currentOpener) {
-        return true;
-      }
-
-      return false;
-    }
-
-    function reconstructBiDirectionalPath(a, b) {
-      var pathOfNodes = [];
-      var aParent = a;
-      while(aParent) {
-        pathOfNodes.unshift(aParent.node);
-        aParent = aParent.parent;
-      }
-      var bParent = b;
-      while (bParent) {
-        pathOfNodes.push(bParent.node);
-        bParent = bParent.parent
-      }
-      return pathOfNodes;
+    function pf(u) {
+      return (originalH(u, to) - originalH(from, u))/2
     }
 
     function visitNode(otherNode, link, cameFrom) {
@@ -163,17 +152,15 @@ function aStarBi(graph, options) {
         nodeState.set(otherNode.id, otherSearchState);
       }
 
-      if (otherSearchState.closed) {
-        // Already processed this node.
-        return;
-      }
-
-      if (canExit(otherSearchState, cameFrom)) {
+      var differentOpeners = (otherSearchState.open !== currentOpener);
+      var searchesMet = otherSearchState.open && differentOpeners;
+      if (searchesMet) {
         // this node was opened by alternative opener. The sets intersect now,
         // we found an optimal path, that goes through *this* node. However, there
         // is no guarantee that this is the global optimal solution path.
+        var tentativeDistance = cameFrom.distanceToSource + distance(otherSearchState.node, cameFrom.node, link);
 
-        var potentialLMin = otherSearchState.distanceToSource + cameFrom.distanceToSource;
+        var potentialLMin = otherSearchState.distanceToSource + tentativeDistance;
         if (potentialLMin < lMin) {
           minFrom = otherSearchState;
           minTo = cameFrom
@@ -183,17 +170,16 @@ function aStarBi(graph, options) {
         return;
       }
 
+      if (otherSearchState.closed) return;
 
       var tentativeDistance = cameFrom.distanceToSource + distance(otherSearchState.node, cameFrom.node, link);
-
       if (tentativeDistance >= otherSearchState.distanceToSource) {
         // This would only make our path longer. Ignore this route.
         return;
       }
 
       // Choose target based on current working set:
-      var target = (currentOpener === BY_FROM) ? to : from;
-      var newFScore = tentativeDistance + heuristic(otherSearchState.node, target);
+      var newFScore = tentativeDistance - pf(cameFrom.node) + pf(otherNode);
       if (newFScore >= lMin) {
         // this can't be optimal path, as we have already found a shorter path.
         return;
@@ -213,4 +199,20 @@ function aStarBi(graph, options) {
       otherSearchState.distanceToSource = tentativeDistance;
     }
   }
+
+  function reconstructBiDirectionalPath(a, b) {
+    var pathOfNodes = [];
+    var aParent = a;
+    while(aParent) {
+      pathOfNodes.unshift(aParent.node);
+      aParent = aParent.parent;
+    }
+    var bParent = b;
+    while (bParent) {
+      pathOfNodes.push(bParent.node);
+      bParent = bParent.parent
+    }
+    return pathOfNodes;
+  }
+
 }
