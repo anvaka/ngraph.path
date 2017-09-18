@@ -60,12 +60,12 @@ function nba(graph, options) {
 
     // the nodes that we still need to evaluate
     var open1Set = new NodeHeap({
-      compare: function(a, b) { return a.f1 - b.f1; },
-      setNodeId: function(node, heapIndex) { node.h1 = heapIndex }
+      compare: defaultSettings.compareF1Score,
+      setNodeId: defaultSettings.setH1
     });
     var open2Set = new NodeHeap({
-      compare: function(a, b) { return a.f2 - b.f2; },
-      setNodeId: function(node, heapIndex) { node.h2 = heapIndex }
+      compare: defaultSettings.compareF2Score,
+      setNodeId: defaultSettings.setH2
     });
 
     var minNode;

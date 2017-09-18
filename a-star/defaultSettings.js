@@ -11,7 +11,13 @@ module.exports = {
   NO_PATH: NO_PATH,
 
   // heap settings
-  setHeapIndex: setHeapIndex
+  setHeapIndex: setHeapIndex,
+
+  // nba:
+  setH1: setH1,
+  setH2: setH2,
+  compareF1Score: compareF1Score,
+  compareF2Score: compareF2Score,
 }
 
 function blindHeuristic(/* a, b */) {
@@ -32,4 +38,20 @@ function compareFScore(a, b) {
 
 function setHeapIndex(nodeSearchState, heapIndex) {
   nodeSearchState.heapIndex = heapIndex;
+}
+
+function compareF1Score(a, b) {
+  return a.f1 - b.f1;
+}
+
+function compareF2Score(a, b) {
+  return a.f2 - b.f2;
+}
+
+function setH1(node, heapIndex) {
+  node.h1 = heapIndex;
+}
+
+function setH2(node, heapIndex) {
+  node.h2 = heapIndex;
 }
