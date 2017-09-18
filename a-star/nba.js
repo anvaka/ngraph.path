@@ -60,14 +60,15 @@ function nba(graph, options) {
 
     // the nodes that we still need to evaluate
     var open1Set = new NodeHeap({
-      compare(a, b) { return a.f1 - b.f1; },
-      setNodeId(node, heapIndex) { node.h1 = heapIndex }
+      compare: function(a, b) { return a.f1 - b.f1; },
+      setNodeId: function(node, heapIndex) { node.h1 = heapIndex }
     });
     var open2Set = new NodeHeap({
-      compare(a, b) { return a.f2 - b.f2; },
-      setNodeId(node, heapIndex) { node.h2 = heapIndex }
+      compare: function(a, b) { return a.f2 - b.f2; },
+      setNodeId: function(node, heapIndex) { node.h2 = heapIndex }
     });
 
+    var minNode;
     var lMin = Number.POSITIVE_INFINITY;
 
     var startNode = new NodeSearchState(from);
@@ -85,11 +86,24 @@ function nba(graph, options) {
     open2Set.push(endNode)
 
     var finished = false;
+    var f1Finsihed = false;
+    var f2Finished = false;
     var cameFrom;
     while (!finished) {
-      // u0 = arg min{g(v) + h(v) | v ∈ M};
-      // M = M − {u0};
+      if (open1Set.length < open2Set.length) {
+        forwardSearch();
+      } else {
+        reverseSearch();
+      }
 
+      finished = f1Finsihed || f2Finished;
+    }
+
+    // If we got here, then there is no path.
+    var path = reconstructPath(minNode);
+    return path;
+
+    function forwardSearch() {
       cameFrom = open1Set.pop();
       if (cameFrom.inMiddle) {
         cameFrom.inMiddle = false;
@@ -102,13 +116,26 @@ function nba(graph, options) {
       if (open1Set.length > 0) {
         f1 = open1Set.peek().f1;
       } else {
-        finished = true;
+        f1Finsihed = true;
       }
     }
 
-    // If we got here, then there is no path.
-    var path = reconstructPath(endNode);
-    return path;
+    function reverseSearch() {
+      cameFrom = open2Set.pop();
+      if (cameFrom.inMiddle) {
+        cameFrom.inMiddle = false;
+
+        if (cameFrom.f2 < lMin && (cameFrom.g2 + f1 - heuristic(cameFrom.node, to))) {
+          graph.forEachLinkedNode(cameFrom.node.id, visitN2, options.oriented) // todo - needs to reverse correctly
+        }
+      }
+
+      if (open2Set.length > 0) {
+        f2 = open2Set.peek().f2;
+      } else {
+        f2Finished = true;
+      }
+    }
 
     function visitN1(otherNode, link) {
       var otherSearchState = nodeState.get(otherNode.id);
@@ -132,12 +159,45 @@ function nba(graph, options) {
         }
       }
       var potentialMin = otherSearchState.g1 + otherSearchState.g2;
-      if (potentialMin < lMin) { lMin = potentialMin }
+      if (potentialMin < lMin) { 
+        lMin = potentialMin;
+        minNode = otherSearchState;
+      }
+    }
+
+    function visitN2(otherNode, link) {
+      var otherSearchState = nodeState.get(otherNode.id);
+      if (!otherSearchState) {
+        otherSearchState = new NodeSearchState(otherNode);
+        nodeState.set(otherNode.id, otherSearchState);
+      }
+
+      if (!otherSearchState.inMiddle) return;
+
+      var tentativeDistance = cameFrom.g2 + distance(cameFrom.node, otherNode, link);
+
+      if (tentativeDistance < otherSearchState.g2) {
+        otherSearchState.g2 = tentativeDistance;
+        otherSearchState.f2 = tentativeDistance + heuristic(from, otherSearchState.node);
+        otherSearchState.p2 = cameFrom;
+        if (otherSearchState.h2 < 0) {
+          open2Set.push(otherSearchState);
+        } else {
+          open2Set.updateItem(otherSearchState.h2);
+        }
+      }
+      var potentialMin = otherSearchState.g1 + otherSearchState.g2;
+      if (potentialMin < lMin) {
+        lMin = potentialMin;
+        minNode = otherSearchState;
+      }
     }
   }
 }
 
 function reconstructPath(searchState) {
+  if (!searchState) return NO_PATH;
+
   var path = [searchState.node];
   var parent = searchState.p1;
 
@@ -146,5 +206,11 @@ function reconstructPath(searchState) {
     parent = parent.p1;
   }
 
+  var child = searchState.p2;
+
+  while (child) {
+    path.unshift(child.node);
+    child = child.p2;
+  }
   return path;
 }
