@@ -125,8 +125,7 @@ the same set of problems. Table below shows required time to solve one problem.
 
 |                                        | Average | Median | Min | Max   | p90   | p99   |
 |----------------------------------------|---------|:------:|:---:|-------|-------|-------|
-|       A*, bidirectional (local optima) |   32ms  |  24ms  | 0ms | 132ms |  71ms | 131ms |
-|      A*, bidirectional (global optima) |   61ms  |  48ms  | 0ms | 319ms | 133ms | 295ms |
+|       A* greedy suboptimal             |   32ms  |  24ms  | 0ms | 132ms |  71ms | 131ms |
 |      A*, unidirectional                |   59ms  |  39ms  | 0ms | 354ms | 137ms | 354ms |
 |      Dijkstra, unidirectional          |  272ms  | 264ms  | 0ms | 733ms | 505ms | 587ms |
 | Dijkstra, bidirectional (global optima)|  269ms  | 253ms  | 1ms | 668ms | 500ms | 607ms |
