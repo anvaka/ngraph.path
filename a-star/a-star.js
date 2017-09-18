@@ -8,7 +8,7 @@
 module.exports = aStarPathSearch;
 
 var NodeHeap = require('./NodeHeap');
-var NodeSearchState = require('./NodeSearchState');
+var makeSearchStatePool = require('./makeSearchStatePool');
 var heuristics = require('./heuristics');
 var defaultSettings = require('./defaultSettings.js');
 
@@ -41,6 +41,7 @@ function aStarPathSearch(graph, options) {
 
   var distance = options.distance;
   if (!distance) distance = defaultSettings.distance;
+  var pool = makeSearchStatePool();
 
   return {
     /**
@@ -56,6 +57,7 @@ function aStarPathSearch(graph, options) {
     if (!from) throw new Error('fromId is not defined in this graph: ' + fromId);
     var to = graph.getNode(toId);
     if (!to) throw new Error('toId is not defined in this graph: ' + toId);
+    pool.reset();
 
     // Maps nodeId to NodeSearchState.
     var nodeState = new Map();
@@ -66,7 +68,7 @@ function aStarPathSearch(graph, options) {
       setNodeId: defaultSettings.setHeapIndex
     });
 
-    var startNode = new NodeSearchState(from);
+    var startNode = pool.createNewState(from);
     nodeState.set(fromId, startNode);
 
     // For the first node, fScore is completely heuristic.
@@ -94,7 +96,7 @@ function aStarPathSearch(graph, options) {
     function visitNeighbour(otherNode, link) {
       var otherSearchState = nodeState.get(otherNode.id);
       if (!otherSearchState) {
-        otherSearchState = new NodeSearchState(otherNode);
+        otherSearchState = pool.createNewState(otherNode);
         nodeState.set(otherNode.id, otherSearchState);
       }
 

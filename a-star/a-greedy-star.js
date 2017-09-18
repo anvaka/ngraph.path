@@ -6,7 +6,7 @@
 module.exports = aStarBi;
 
 var NodeHeap = require('./NodeHeap');
-var NodeSearchState = require('./NodeSearchState');
+var makeSearchStatePool = require('./makeSearchStatePool');
 var heuristics = require('./heuristics');
 var defaultSettings = require('./defaultSettings');
 
@@ -27,9 +27,7 @@ Object.assign(module.exports, heuristics);
  * 
  * @param {Object} options that configures search
  * @param {Function(a, b)} options.heuristic - a function that returns estimated distance between
- * nodes `a` and `b`. This function should never overestimate actual distance between two
- * nodes (otherwise the found path will not be the shortest). Defaults function returns 0,
- * which makes this search equivalent to Dijkstra search.
+ * nodes `a` and `b`.  Defaults function returns 0, which makes this search equivalent to Dijkstra search.
  * @param {Function(a, b)} options.distance - a function that returns actual distance between two
  * nodes `a` and `b`. By default this is set to return graph-theoretical distance (always 1);
  * 
@@ -45,6 +43,7 @@ function aStarBi(graph, options) {
 
   var distance = options.distance;
   if (!distance) distance = defaultSettings.distance;
+  var pool = makeSearchStatePool();
 
   return {
     find: find
@@ -60,6 +59,8 @@ function aStarBi(graph, options) {
 
     if (from === to) return [from]; // trivial case.
 
+    pool.reset();
+
     // Maps nodeId to NodeSearchState.
     var nodeState = new Map();
 
@@ -74,7 +75,7 @@ function aStarBi(graph, options) {
     });
 
 
-    var startNode = new NodeSearchState(from);
+    var startNode = pool.createNewState(from);
     nodeState.set(fromId, startNode);
 
     // For the first node, fScore is completely heuristic.
@@ -84,7 +85,7 @@ function aStarBi(graph, options) {
     openSetFrom.push(startNode);
     startNode.open = BY_FROM;
 
-    var endNode = new NodeSearchState(to);
+    var endNode = pool.createNewState(to);
     endNode.fScore = heuristic(to, from);
     endNode.distanceToSource = 0;
     openSetTo.push(endNode);
@@ -155,7 +156,7 @@ function aStarBi(graph, options) {
     function visitNode(otherNode, link, cameFrom) {
       var otherSearchState = nodeState.get(otherNode.id);
       if (!otherSearchState) {
-        otherSearchState = new NodeSearchState(otherNode);
+        otherSearchState = pool.createNewState(otherNode);
         nodeState.set(otherNode.id, otherSearchState);
       }
 
