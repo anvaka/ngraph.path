@@ -1,5 +1,5 @@
 module.exports = {
-  aStar: require('./a-star/astar.js'),
-  aStarBi: require('./a-star/astar-bi'),
+  aStar: require('./a-star/a-star.js'),
+  aGreedy: require('./a-star/a-greedy-star'),
   nba: require('./a-star/nba'),
 }

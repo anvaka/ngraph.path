@@ -1,5 +1,7 @@
 /**
- * Performs bi-directional A Star path finding.
+ * Performs suboptimal, greed A Star path finding.
+ * This finder does not necessary finds the shortest path. The path
+ * that it finds is very close to the shortest one. It is very fast though.
  */
 module.exports = aStarBi;
 

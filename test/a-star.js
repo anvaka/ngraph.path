@@ -1,6 +1,6 @@
 var test = require('tap').test;
 var aStar = require('../').aStar;
-var aStarBi = require('../').aStarBi;
+var aGreedy = require('../').aGreedy;
 var createGraph = require('ngraph.graph');
 var fromDot = require('ngraph.fromdot');
 var asciiUtils = require('./utils/graphFromAscii');
@@ -84,7 +84,7 @@ test('it can find path without any config', t => {
   t.equals(path[1].id, 'b', 'b is here');
   t.equals(path[2].id, 'a', 'a is here');
 
-  var pathFinderBi = aStarBi(graph);
+  var pathFinderBi = aGreedy(graph);
   var pathBi = pathFinderBi.find('a', 'c');
   t.equals(pathBi[0].id, 'c', 'c is here');
   t.equals(pathBi[1].id, 'b', 'b is here');
