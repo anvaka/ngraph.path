@@ -125,18 +125,14 @@ the same set of problems. Table below shows required time to solve one problem.
 
 |                                        | Average | Median | Min | Max   | p90   | p99   |
 |----------------------------------------|---------|:------:|:---:|-------|-------|-------|
-|       A* greedy suboptimal             |   32ms  |  24ms  | 0ms | 132ms |  71ms | 131ms |
-|      A*, unidirectional                |   59ms  |  39ms  | 0ms | 354ms | 137ms | 354ms |
-|      Dijkstra, unidirectional          |  272ms  | 264ms  | 0ms | 733ms | 505ms | 587ms |
-| Dijkstra, bidirectional (global optima)|  269ms  | 253ms  | 1ms | 668ms | 500ms | 607ms |
-| Dijkstra, bidirectional (local optima) |  158ms  | 143ms  | 0ms | 441ms | 313ms | 392ms |
+|      A* greedy (suboptimal)            |   32ms  |  24ms  | 0ms | 179ms |  73ms | 136ms |
+|      NBA*                              |   44ms  |  34ms  | 0ms | 222ms | 107ms | 172ms |
+|      A*, unidirectional                |   55ms  |  38ms  | 0ms | 356ms | 123ms | 287ms |
+|      Dijkstra                          |  264ms  | 258ms  | 0ms | 782ms | 483ms | 631ms |
 
-"Local optima" in bidirectional search converged the fastest, however, as name implies the found
-path is not necessary globally optimal. In local optima problems we stop the finder as soon as
-two searches intersect.
-
-I did implement bidirectional globally optimal finder, but looking at these results I think I
-might be missing something - I'd like to see better gains on bidirectional search.
+"A* greedy" converged the fastest, however, as name implies the found path is not necessary
+globally optimal. The algorithm performs two searches from both ends and quits as soon as both
+searches meet.
 
 # Which method to choose?
 
@@ -144,6 +140,11 @@ With many options available, it may be confusing whether to pick Dijkstra or A*.
 
 I would pick Dijkstra if there is no way to guess a distance between two arbitrary nodes
 in a graph. If we can guess distance between two nodes - pick A*.
+
+Among algorithms presented above, I'd recommend `A* greedy` if you care more about speed and
+less about accuracy. However if accuracy is your top priority - choose `NBA*`. 
+This is a bi-directional, optimal A* algorithm with very good exit criteria. You can read
+about it here: https://repub.eur.nl/pub/16100/ei2009-10.pdf
 
 # license
 
