@@ -6,7 +6,6 @@ var fromDot = require('ngraph.fromdot');
 var asciiUtils = require('./utils/graphFromAscii');
 
 test('it can find weighted', t => {
-  let createGraph = require('ngraph.graph');
   let graph = createGraph();
 
   graph.addLink('a', 'b', {weight: 10});
@@ -27,6 +26,64 @@ test('it can find weighted', t => {
   t.equals(path[2].id, 'a', 'a is here');
   t.end();
 });
+
+test('A* can find directed path', t => {
+  let graph = createGraph();
+
+  // We want to find a path from a to e. 
+  // a -> b <- e
+  //  \       /
+  //   c -> d
+  // In undirected graph the `a, b, e` will be the solution.
+  // In directed graph it sohuld be `a c d e`
+  graph.addLink('a', 'b');
+  graph.addLink('e', 'b');
+
+  graph.addLink('a', 'c');
+  graph.addLink('c', 'd');
+  graph.addLink('d', 'e');
+
+
+  var pathFinder = aStar(graph, {
+    oriented: true
+  });
+  let path = pathFinder.find('a', 'e');
+
+  t.equals(path[0].id, 'e', 'e is here');
+  t.equals(path[1].id, 'd', 'd is here');
+  t.equals(path[2].id, 'c', 'c is here');
+  t.equals(path[3].id, 'a', 'a is here');
+  t.end();
+});
+
+test('A* greedy can find directed path', t => {
+  let graph = createGraph();
+
+  // We want to find a path from a to e. 
+  // a -> b <- e
+  //  \       /
+  //   c -> d
+  // In undirected graph the `a, b, e` will be the solution.
+  // In directed graph it sohuld be `a c d e`
+  graph.addLink('a', 'b');
+  graph.addLink('e', 'b');
+
+  graph.addLink('a', 'c');
+  graph.addLink('c', 'd');
+  graph.addLink('d', 'e');
+
+  var pathFinder = aGreedy(graph, {
+    oriented: true
+  });
+  let path = pathFinder.find('a', 'e');
+
+  t.equals(path[0].id, 'e', 'e is here');
+  t.equals(path[1].id, 'd', 'd is here');
+  t.equals(path[2].id, 'c', 'c is here');
+  t.equals(path[3].id, 'a', 'a is here');
+  t.end();
+});
+
 
 test('it can use heuristic', t => {
   let createGraph = require('ngraph.graph');
@@ -85,10 +142,12 @@ test('it can find path without any config', t => {
   t.equals(path[2].id, 'a', 'a is here');
 
   var pathFinderBi = aGreedy(graph);
-  var pathBi = pathFinderBi.find('a', 'c');
-  t.equals(pathBi[0].id, 'c', 'c is here');
-  t.equals(pathBi[1].id, 'b', 'b is here');
-  t.equals(pathBi[2].id, 'a', 'a is here');
+  let foundNodes = new Set();
+  pathFinderBi.find('a', 'c').forEach(n => foundNodes.add(n.id));
+
+  t.ok(foundNodes.has('c'), 'c is here');
+  t.ok(foundNodes.has('b'), 'b is here');
+  t.ok(foundNodes.has('a'), 'a is here');
 
   t.end();
 })

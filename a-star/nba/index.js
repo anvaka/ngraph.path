@@ -38,6 +38,9 @@ function nba(graph, options) {
 
     pool.reset();
 
+    var forwardVisitor = oriented ? visitN1Oriented : visitN1;
+    var reverseVisitor = oriented ? visitN2Oriented : visitN2;
+
     // Maps nodeId to NBASearchState.
     var nodeState = new Map();
 
@@ -90,7 +93,7 @@ function nba(graph, options) {
       cameFrom.closed = true;
 
       if (cameFrom.f1 < lMin && (cameFrom.g1 + f2 - heuristic(from, cameFrom.node)) < lMin) {
-        graph.forEachLinkedNode(cameFrom.node.id, visitN1, options.oriented) // todo - needs to reverse correctly
+        graph.forEachLinkedNode(cameFrom.node.id, forwardVisitor);
       }
 
       if (open1Set.length > 0) {
@@ -106,7 +109,7 @@ function nba(graph, options) {
       cameFrom.closed = true;
 
       if (cameFrom.f2 < lMin && (cameFrom.g2 + f1 - heuristic(cameFrom.node, to)) < lMin) {
-        graph.forEachLinkedNode(cameFrom.node.id, visitN2, options.oriented) // todo - needs to reverse correctly
+        graph.forEachLinkedNode(cameFrom.node.id, reverseVisitor);
       }
 
       if (open2Set.length > 0) {
@@ -168,6 +171,15 @@ function nba(graph, options) {
         lMin = potentialMin;
         minNode = otherSearchState;
       }
+    }
+
+    function visitN2Oriented(otherNode, link) {
+      // we are going backwards, graph needs to be reversed. 
+      if (link.toId === cameFrom.node.id) return visitN2(otherNode, link);
+    }
+    function visitN1Oriented(otherNode, link) {
+      // this is forward direction, so we should be coming FROM:
+      if (link.fromId === cameFrom.node.id) return visitN1(otherNode, link);
     }
   }
 }

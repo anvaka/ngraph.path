@@ -61,6 +61,8 @@ function aStarBi(graph, options) {
 
     pool.reset();
 
+    var callVisitor = oriented ? orientedVisitor : nonOrientedVisitor;
+
     // Maps nodeId to NodeSearchState.
     var nodeState = new Map();
 
@@ -116,17 +118,30 @@ function aStarBi(graph, options) {
 
       if (current.distanceToSource > lMin) continue;
 
-      graph.forEachLinkedNode(current.node.id, callVisitor, oriented);
+      graph.forEachLinkedNode(current.node.id, callVisitor);
 
       if (minFrom && minTo) {
+        // This is not necessary the best path, but we are so greedy that we
+        // can't resist:
         return reconstructBiDirectionalPath(minFrom, minTo);
       }
     }
 
     return NO_PATH; // No path.
 
-    function callVisitor(otherNode, link) {
+    function nonOrientedVisitor(otherNode, link) {
       return visitNode(otherNode, link, current);
+    }
+
+    function orientedVisitor(otherNode, link) {
+      // For oritned graphs we need to reverse graph, when traveling
+      // backwards. So, we use non-oriented ngraph's traversal, and 
+      // filter link orientation here.
+      if (currentOpener === BY_FROM) {
+        if (link.fromId === current.node.id) return visitNode(otherNode, link, current)
+      } else if (currentOpener === BY_TO) {
+        if (link.toId === current.node.id) return visitNode(otherNode, link, current);
+      }
     }
 
     function canExit(currentNode) {
@@ -142,12 +157,12 @@ function aStarBi(graph, options) {
       var pathOfNodes = [];
       var aParent = a;
       while(aParent) {
-        pathOfNodes.unshift(aParent.node);
+        pathOfNodes.push(aParent.node);
         aParent = aParent.parent;
       }
       var bParent = b;
       while (bParent) {
-        pathOfNodes.push(bParent.node);
+        pathOfNodes.unshift(bParent.node);
         bParent = bParent.parent
       }
       return pathOfNodes;
@@ -179,7 +194,6 @@ function aStarBi(graph, options) {
         // we are done with this node.
         return;
       }
-
 
       var tentativeDistance = cameFrom.distanceToSource + distance(otherSearchState.node, cameFrom.node, link);
 
