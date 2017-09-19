@@ -1,6 +1,48 @@
 # ngraph.path
 
-Fast path finding in graphs. TODO: Link the demo
+Fast path finding in arbitrary graphs. TODO: Link the demo
+
+# Performance
+
+I measured performance of this library on New York City roads graph (`733,844` edges, `264,346` nodes).
+It was done by solving `250` random path finding problems. Each algorithm was solving
+the same set of problems. Table below shows required time to solve one problem.
+
+|                                        | Average | Median | Min | Max   | p90   | p99   |
+|----------------------------------------|---------|:------:|:---:|-------|-------|-------|
+|      A* greedy (suboptimal)            |   32ms  |  24ms  | 0ms | 179ms |  73ms | 136ms |
+|      NBA*                              |   44ms  |  34ms  | 0ms | 222ms | 107ms | 172ms |
+|      A*, unidirectional                |   55ms  |  38ms  | 0ms | 356ms | 123ms | 287ms |
+|      Dijkstra                          |  264ms  | 258ms  | 0ms | 782ms | 483ms | 631ms |
+
+"A* greedy" converged the fastest, however, as name implies the found path is not necessary
+globally optimal. The algorithm performs two searches from both ends and quits as soon as both
+searches meet.
+
+## Why is it fast?
+
+There are a few things that contribute to the performance of this library.
+
+I'm using heap-based priority queue, built specifically for the path finding.
+I [modified a heap's](https://github.com/anvaka/ngraph.path/blob/master/a-star/NodeHeap.js) implementation,
+so that changing priority of any element takes `O(lg n)` time.
+
+Each path finder opens many graph nodes during its exploration, which creates pressure
+on garbage collector. To avoid the pressure, I've created an [object pool](https://github.com/anvaka/ngraph.path/blob/master/a-star/nba/makeNBASearchStatePool.js),
+which recycles nodes when possible.
+
+In general, the `A*` algorithm helps to converge to the optimal solution faster than
+Dijkstra, because it uses "hints" from the heuristic function. When search is performed
+in both directions (`source -> target` and `target -> source`), the convergence time is usually
+reduced. The `NBA*` algorithm guarantees optimal shortest path, while at the same time it
+removes balanced heuristic requirement. It also seem to be the fastest algorithm, implemented by
+this library *(NB: If you have suggestions how to improve this even further - please let me know!)*
+
+I also tried to create my own version of bi-directional A* search, which
+turned out to be harder than I expected - the two searches met each other quickly, but the point
+where they met was not necessary on the shortest global path. It was close to optimal, but not the optimal.
+I wanted to remove the code, but then changed my mind: It finds a path very quickly. So, in cases when
+speed matter more than correctness, this could be a good trade off. This `A* greedy` is [in the library](https://github.com/anvaka/ngraph.path/blob/master/a-star/a-greedy-star.js). 
 
 # usage
 
@@ -11,7 +53,7 @@ two nodes in arbitrary graph
 
 ``` js
 let path = require('ngraph.path');
-let pathFinder = path.aStar(graph);
+let pathFinder = path.aStar(graph); // graph is https://github.com/anvaka/ngraph.graph
 
 // now we can find a path between two nodes:
 let fromNodeId = 40;
@@ -113,28 +155,20 @@ With this simple heuristic our algorithm becomes smarter and faster.
 It is very important that our heuristic function does not overestimate actual distance
 between two nodes. If it does so, then algorithm cannot guarantee the shortest path.
 
-# Performance
+## available finders
 
-Internally, I'm using heap-based priority queue, built specifically for path finding.
-I modified it, so that changing priority of any element in the queue takes `O(lg n)`
-time.
+The library implements a few A* based path finders:
 
-I measured performance of this implementation on New York City roads graph (733,844 edges, 264,346 nodes).
-It was done by solving 250 random path finding problems. Each algorithm was solving
-the same set of problems. Table below shows required time to solve one problem.
+``` js
+let aStarPathFinder = path.aStar(graph, options);
+let aGreedyStar = path.aGreedy(graph, options);
+let nbaFinder = path.nba(graph, options);
+```
 
-|                                        | Average | Median | Min | Max   | p90   | p99   |
-|----------------------------------------|---------|:------:|:---:|-------|-------|-------|
-|      A* greedy (suboptimal)            |   32ms  |  24ms  | 0ms | 179ms |  73ms | 136ms |
-|      NBA*                              |   44ms  |  34ms  | 0ms | 222ms | 107ms | 172ms |
-|      A*, unidirectional                |   55ms  |  38ms  | 0ms | 356ms | 123ms | 287ms |
-|      Dijkstra                          |  264ms  | 258ms  | 0ms | 782ms | 483ms | 631ms |
+Each finder has just one method `find(fromNodeId, toNodeId)`, which returns array of
+nodes, that belongs to the found path. If no path exists - empty array is returned.
 
-"A* greedy" converged the fastest, however, as name implies the found path is not necessary
-globally optimal. The algorithm performs two searches from both ends and quits as soon as both
-searches meet.
-
-# Which method to choose?
+# Which finder to choose?
 
 With many options available, it may be confusing whether to pick Dijkstra or A*.
 
