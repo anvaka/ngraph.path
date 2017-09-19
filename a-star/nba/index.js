@@ -9,16 +9,42 @@ var NO_PATH = defaultSettings.NO_PATH;
 
 Object.assign(module.exports, heuristics);
 
+
+/**
+ * Creates a new instance of pathfinder. A pathfinder has just one method:
+ * `find(fromId, toId)`.
+ * 
+ * This is implementation of the NBA* algorithm described in 
+ * 
+ *  "Yet another bidirectional algorithm for shortest paths" paper by Wim Pijls and Henk Post
+ * 
+ * The paper is available here: https://repub.eur.nl/pub/16100/ei2009-10.pdf
+ * 
+ * @param {ngraph.graph} graph instance. See https://github.com/anvaka/ngraph.graph
+ * @param {Object} options that configures search
+ * @param {Function(a, b)} options.heuristic - a function that returns estimated distance between
+ * nodes `a` and `b`. This function should never overestimate actual distance between two
+ * nodes (otherwise the found path will not be the shortest). Defaults function returns 0,
+ * which makes this search equivalent to Dijkstra search.
+ * @param {Function(a, b)} options.distance - a function that returns actual distance between two
+ * nodes `a` and `b`. By default this is set to return graph-theoretical distance (always 1);
+ * 
+ * @returns {Object} A pathfinder with single method `find()`.
+ */
 function nba(graph, options) {
   options = options || {};
   // whether traversal should be considered over oriented graph.
   var oriented = options.oriented;
+  var quitFast = options.quitFast;
 
   var heuristic = options.heuristic;
   if (!heuristic) heuristic = defaultSettings.heuristic;
 
   var distance = options.distance;
   if (!distance) distance = defaultSettings.distance;
+
+  // During stress tests I noticed that garbage collection was one of the heaviest
+  // contributors to the algorithm's speed. So I'm using an object pool to recycle nodes.
   var pool = makeNBASearchStatePool();
 
   return {
@@ -31,6 +57,8 @@ function nba(graph, options) {
   };
 
   function find(fromId, toId) {
+    // I must apologize for the code duplication. This was the easiest way for me to
+    // implement the algorithm fast.
     var from = graph.getNode(fromId);
     if (!from) throw new Error('fromId is not defined in this graph: ' + fromId);
     var to = graph.getNode(toId);
@@ -38,13 +66,23 @@ function nba(graph, options) {
 
     pool.reset();
 
+    // I must also apologize for somewhat cryptic names. The NBA* is bi-directional
+    // search algorithm, which means it runs two searches in parallel. One runs
+    // from source node to target, while the other one runs from target to source.
+    // Everywhere where you see `1` it means it's for the forward search. `2` is for 
+    // backward search.
+
+    // For oriented graph path finding, we need to reverse the graph, so that
+    // backward search visits correct link. Obviously we don't want to duplicate
+    // the graph, instead we always traverse the graph as non-oriented, and filter
+    // edges in `visitN1Oriented/visitN2Oritented`
     var forwardVisitor = oriented ? visitN1Oriented : visitN1;
     var reverseVisitor = oriented ? visitN2Oriented : visitN2;
 
     // Maps nodeId to NBASearchState.
     var nodeState = new Map();
 
-    // the nodes that we still need to evaluate
+    // These two heaps store nodes by their underestimated values.
     var open1Set = new NodeHeap({
       compare: defaultSettings.compareF1Score,
       setNodeId: defaultSettings.setH1
@@ -54,9 +92,13 @@ function nba(graph, options) {
       setNodeId: defaultSettings.setH2
     });
 
+    // This is where both searches will meet.
     var minNode;
+
+    // The smallest path length seen so far is stored here:
     var lMin = Number.POSITIVE_INFINITY;
 
+    // We start by putting start/end nodes to the corresponding heaps
     var startNode = pool.createNewState(from);
     nodeState.set(fromId, startNode); 
     startNode.g1 = 0;
@@ -71,18 +113,23 @@ function nba(graph, options) {
     endNode.f2 = f2;
     open2Set.push(endNode)
 
+    // the `cameFrom` variable is accessed by both searches, so that we can store parents.
     var cameFrom;
+
+    // this is the main algorithm loop:
     while (open2Set.length && open1Set.length) {
       if (open1Set.length < open2Set.length) {
         forwardSearch();
       } else {
         reverseSearch();
       }
+
+      if (quitFast && minNode) break;
     }
 
     // If we got here, then there is no path.
     var path = reconstructPath(minNode);
-    return path;
+    return path; // the public API is over
 
     function forwardSearch() {
       cameFrom = open1Set.pop();
