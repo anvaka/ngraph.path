@@ -34,7 +34,8 @@ which recycles nodes when possible.
 In general, the `A*` algorithm helps to converge to the optimal solution faster than
 Dijkstra, because it uses "hints" from the heuristic function. When search is performed
 in both directions (`source -> target` and `target -> source`), the convergence time is usually
-reduced. The `NBA*` algorithm guarantees optimal shortest path, while at the same time it
+reduced. The [NBA*](https://github.com/anvaka/ngraph.path/blob/master/a-star/nba/index.js) algorithm
+ guarantees optimal shortest path, while at the same time it
 removes balanced heuristic requirement. It also seem to be the fastest algorithm, implemented by
 this library *(NB: If you have suggestions how to improve this even further - please let me know!)*
 
