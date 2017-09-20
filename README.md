@@ -1,6 +1,10 @@
 # ngraph.path
 
-Fast path finding in arbitrary graphs. TODO: Link the demo
+Fast path finding in arbitrary graphs. [Demo](https://anvaka.github.io/ngraph.path.demo/), 
+
+[![demo](https://raw.githubusercontent.com/anvaka/ngraph.path/master/docs/seattle.gif)](https://anvaka.github.io/ngraph.path.demo/)
+
+[Demo's source code](http://github.com/anvaka/ngraph.path.demo)
 
 # Performance
 
@@ -16,8 +20,7 @@ the same set of problems. Table below shows required time to solve one problem.
 |      Dijkstra                          |  264ms  | 258ms  | 0ms | 782ms | 483ms | 631ms |
 
 "A* greedy" converged the fastest, however, as name implies the found path is not necessary
-globally optimal. The algorithm performs two searches from both ends and quits as soon as both
-searches meet.
+globally optimal.
 
 ## Why is it fast?
 
@@ -33,17 +36,18 @@ which recycles nodes when possible.
 
 In general, the `A*` algorithm helps to converge to the optimal solution faster than
 Dijkstra, because it uses "hints" from the heuristic function. When search is performed
-in both directions (`source -> target` and `target -> source`), the convergence time is usually
-reduced. The [NBA*](https://github.com/anvaka/ngraph.path/blob/master/a-star/nba/index.js) algorithm
- guarantees optimal shortest path, while at the same time it
-removes balanced heuristic requirement. It also seem to be the fastest algorithm, implemented by
-this library *(NB: If you have suggestions how to improve this even further - please let me know!)*
+in both directions (`source -> target` and `target -> source`), the convergence can be
+improved even more. The [NBA*](https://github.com/anvaka/ngraph.path/blob/master/a-star/nba/index.js) algorithm
+is a bi-directional path finder, that guarantees optimal shortest path. At the same time it
+removes balanced heuristic requirement. It also seem to be the fastest algorithm, among implemented 
+here *(NB: If you have suggestions how to improve this even further - please let me know!)*
 
 I also tried to create my own version of bi-directional A* search, which
 turned out to be harder than I expected - the two searches met each other quickly, but the point
 where they met was not necessary on the shortest global path. It was close to optimal, but not the optimal.
-I wanted to remove the code, but then changed my mind: It finds a path very quickly. So, in cases when
-speed matter more than correctness, this could be a good trade off. This `A* greedy` is [in the library](https://github.com/anvaka/ngraph.path/blob/master/a-star/a-greedy-star.js). 
+I wanted to remove the code, but then changed my mind: It finds a path very quickly. So, in case when
+speed matters more than correctness, this could be a good trade off. I called this algorithm `A* greedy`,
+but maybe it should be `A* lazy`.
 
 # usage
 
