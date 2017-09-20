@@ -1,6 +1,6 @@
 # ngraph.path
 
-Fast path finding in arbitrary graphs. [Demo](https://anvaka.github.io/ngraph.path.demo/), 
+Fast path finding for arbitrary graphs. [Play with a demo](https://anvaka.github.io/ngraph.path.demo/) or [Watch it](https://www.youtube.com/watch?v=hGeZuIEV6KU) on YouTube.
 
 [![demo](https://raw.githubusercontent.com/anvaka/ngraph.path/master/docs/seattle.gif)](https://anvaka.github.io/ngraph.path.demo/)
 
