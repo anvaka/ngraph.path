@@ -4,7 +4,8 @@ Fast path finding for arbitrary graphs. [Play with a demo](https://anvaka.github
 
 [![demo](https://raw.githubusercontent.com/anvaka/ngraph.path/master/docs/seattle.gif)](https://anvaka.github.io/ngraph.path.demo/)
 
-[Demo's source code](http://github.com/anvaka/ngraph.path.demo)
+If you want to learn how the demo was made, please refer to the [demo's source code](https://github.com/anvaka/ngraph.path.demo#ngraphpath-demo).
+I tried to describe it in great details.
 
 # Performance
 
