@@ -7,8 +7,8 @@ var makeNBASearchStatePool = require('./makeNBASearchStatePool.js');
 
 var NO_PATH = defaultSettings.NO_PATH;
 
-Object.assign(module.exports, heuristics);
-
+module.exports.l2 = heuristics.l2;
+module.exports.l1 = heuristics.l1;
 
 /**
  * Creates a new instance of pathfinder. A pathfinder has just one method:
