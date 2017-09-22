@@ -67,8 +67,10 @@ function nba(graph, options) {
     pool.reset();
 
     // I must also apologize for somewhat cryptic names. The NBA* is bi-directional
-    // search algorithm, which means it runs two searches in parallel. One runs
-    // from source node to target, while the other one runs from target to source.
+    // search algorithm, which means it runs two searches in parallel. One is called
+    // forward search and it runs from source node to target, while the other one
+    // (backward search) runs from target to source.
+
     // Everywhere where you see `1` it means it's for the forward search. `2` is for 
     // backward search.
 
@@ -99,6 +101,8 @@ function nba(graph, options) {
     var lMin = Number.POSITIVE_INFINITY;
 
     // We start by putting start/end nodes to the corresponding heaps
+    // If variable names like `f1`, `g1` are too confusing, please refer
+    // to makeNBASearchStatePool.js file, which has detailed description.
     var startNode = pool.createNewState(from);
     nodeState.set(fromId, startNode); 
     startNode.g1 = 0;
@@ -127,7 +131,6 @@ function nba(graph, options) {
       if (quitFast && minNode) break;
     }
 
-    // If we got here, then there is no path.
     var path = reconstructPath(minNode);
     return path; // the public API is over
 
@@ -144,6 +147,7 @@ function nba(graph, options) {
       }
 
       if (open1Set.length > 0) {
+        // this will be used in reverse search
         f1 = open1Set.peek().f1;
       } 
     }
@@ -160,6 +164,7 @@ function nba(graph, options) {
       }
 
       if (open2Set.length > 0) {
+        // this will be used in forward search
         f2 = open2Set.peek().f2;
       }
     }
