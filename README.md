@@ -161,6 +161,16 @@ With this simple heuristic our algorithm becomes smarter and faster.
 It is very important that our heuristic function does not overestimate actual distance
 between two nodes. If it does so, then algorithm cannot guarantee the shortest path.
 
+## oriented graphs
+
+If you want the pathfinder to treat your graph as oriented - pass `oriented: true` setting:
+
+``` js
+let pathFinder = aStar(graph, {
+  oriented: true
+});
+```
+
 ## available finders
 
 The library implements a few A* based path finders:

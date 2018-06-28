@@ -31,6 +31,7 @@ module.exports.l1 = heuristics.l1;
  * nodes `a` and `b`.  Defaults function returns 0, which makes this search equivalent to Dijkstra search.
  * @param {Function(a, b)} options.distance - a function that returns actual distance between two
  * nodes `a` and `b`. By default this is set to return graph-theoretical distance (always 1);
+ * @param {Boolean} options.oriented - whether graph should be considered oriented or not.
  * 
  * @returns {Object} A pathfinder with single method `find()`.
  */
