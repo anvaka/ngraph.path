@@ -52,6 +52,14 @@ but maybe it should be `A* lazy`.
 
 # usage
 
+## installation
+
+You can install this module, bu requiring it from npm:
+
+```
+npm i ngraph.path
+```
+
 ## Basic usage
 
 This is a basic example, which finds a path between arbitrary
