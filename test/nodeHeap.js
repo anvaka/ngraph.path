@@ -64,7 +64,6 @@ test('it initializes ids for multiple nodes', (t) => {
       v: Math.random() * 100
     });
   }
-  debugger;
   var heap = new NodeHeap(nodes, {
     compare(a, b) {
       return a.v - b.v;
