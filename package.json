@@ -1,6 +1,6 @@
 {
   "name": "ngraph.path",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Path finding in a graph",
   "main": "index.js",
   "scripts": {
