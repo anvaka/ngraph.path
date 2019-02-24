@@ -3,9 +3,8 @@
   "version": "1.0.3",
   "description": "Path finding in a graph",
   "main": "index.js",
-  "browser": "dist/ngraph.path.min.js",
   "scripts": {
-    "build": "webpack --mode=production",
+    "build": "browserify index.js -s ngraphPath -o dist/ngraph.path.js && uglifyjs dist/ngraph.path.js -o dist/ngraph.path.min.js",
     "test": "tap test/*.js"
   },
   "keywords": [
@@ -23,11 +22,10 @@
     "url": "https://github.com/anvaka/ngraph.path"
   },
   "devDependencies": {
+    "browserify": "^16.2.3",
     "ngraph.fromdot": "^0.4.0",
     "ngraph.graph": "0.0.15",
     "tap": "^12.5.3",
-    "uglifyjs-webpack-plugin": "^2.1.1",
-    "webpack": "^4.29.4",
-    "webpack-cli": "^3.2.3"
+    "uglify-js": "^3.4.9"
   }
 }
