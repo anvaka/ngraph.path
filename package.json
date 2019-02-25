@@ -4,6 +4,7 @@
   "description": "Path finding in a graph",
   "main": "index.js",
   "scripts": {
+    "build": "browserify index.js -s ngraphPath -o dist/ngraph.path.js && uglifyjs dist/ngraph.path.js -o dist/ngraph.path.min.js",
     "test": "tap test/*.js"
   },
   "keywords": [
@@ -21,8 +22,10 @@
     "url": "https://github.com/anvaka/ngraph.path"
   },
   "devDependencies": {
-    "ngraph.fromdot": "^0.2.0",
-    "ngraph.graph": "0.0.14",
-    "tap": "^10.7.2"
+    "browserify": "^16.2.3",
+    "ngraph.fromdot": "^0.4.0",
+    "ngraph.graph": "0.0.15",
+    "tap": "^12.5.3",
+    "uglify-js": "^3.4.9"
   }
 }
