@@ -60,6 +60,14 @@ You can install this module, bu requiring it from npm:
 npm i ngraph.path
 ```
 
+Or download from CDN:
+
+``` html
+<script src='https://unpkg.com/ngraph.graph@1.1.0/dist/ngraph.path.min.js'></script>
+```
+
+If you download from CDN the library will be available under `ngraphPath` global name.
+
 ## Basic usage
 
 This is a basic example, which finds a path between arbitrary
