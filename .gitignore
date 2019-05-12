@@ -7,6 +7,7 @@ lib-cov
 *.pid
 *.gz
 .DS_Store
+.nyc_output
 
 pids
 logs
