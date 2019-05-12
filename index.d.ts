@@ -3,25 +3,26 @@
 // Definitions by: Nathan Westlake <https://github.com/CorayThan>
 // Definitions: https://github.com/DefinitelyTyped/DefinitelyTyped
 
+import { Graph, Link, Node, NodeId } from "ngraph.graph"
+
 declare module "ngraph.path" {
 
-    import { Graph, Link, Node, NodeId } from "ngraph.graph"
 
-    interface PathFinderOptions {
+    interface PathFinderOptions<NodeData, LinkData> {
         oriented?: boolean
         quitFast?: boolean
-        heuristic?: (from: NodeId, to: NodeId) => number
-        distance?: (from: NodeId, to: NodeId, link: Link) => number
+        heuristic?: (from: Node<NodeData>, to: Node<NodeData>) => number
+        distance?: (from: Node<NodeData>, to: Node<NodeData>, link: Link<NodeData>) => number
     }
 
-    interface PathFinder {
-        find: (from: NodeId, to: NodeId) => Node[]
+    interface PathFinder<NodeData> {
+        find: (from: NodeId, to: NodeId) => Node<NodeData>[]
     }
 
-    export function aStar(graph: Graph, options?: PathFinderOptions): PathFinder
+    export function aStar<NodeData, LinkData>(graph: Graph<NodeData, LinkData>, options?: PathFinderOptions<NodeData, LinkData>): PathFinder<NodeData>
 
-    export function aGreedy(graph: Graph, options?: PathFinderOptions): PathFinder
+    export function aGreedy<NodeData, LinkData>(graph: Graph<NodeData, LinkData>, options?: PathFinderOptions<NodeData, LinkData>): PathFinder<NodeData>
 
-    export function nba(graph: Graph, options?: PathFinderOptions): PathFinder
+    export function nba<NodeData, LinkData>(graph: Graph<NodeData, LinkData>, options?: PathFinderOptions<NodeData, LinkData>): PathFinder<NodeData>
 
 }
