@@ -12,7 +12,7 @@ declare module "ngraph.path" {
         oriented?: boolean
         quitFast?: boolean
         heuristic?: (from: Node<NodeData>, to: Node<NodeData>) => number
-        distance?: (from: Node<NodeData>, to: Node<NodeData>, link: Link<NodeData>) => number
+        distance?: (from: Node<NodeData>, to: Node<NodeData>, link: Link<LinkData>) => number
     }
 
     interface PathFinder<NodeData> {
