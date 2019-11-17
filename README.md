@@ -63,7 +63,7 @@ npm i ngraph.path
 Or download from CDN:
 
 ``` html
-<script src='https://unpkg.com/ngraph.graph@1.1.0/dist/ngraph.path.min.js'></script>
+<script src='https://unpkg.com/ngraph.path@1.3.1/dist/ngraph.path.min.js'></script>
 ```
 
 If you download from CDN the library will be available under `ngraphPath` global name.
