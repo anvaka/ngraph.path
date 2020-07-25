@@ -22,10 +22,10 @@
     "url": "https://github.com/anvaka/ngraph.path"
   },
   "devDependencies": {
-    "browserify": "^16.2.3",
-    "ngraph.fromdot": "^0.4.0",
-    "ngraph.graph": "18.0.0",
-    "tap": "^13.1.8",
-    "uglify-js": "^3.4.9"
+    "browserify": "^16.5.1",
+    "ngraph.fromdot": "^6.0.0",
+    "ngraph.graph": "^19.1.0",
+    "tap": "^14.10.8",
+    "uglify-js": "^3.10.0"
   }
 }
