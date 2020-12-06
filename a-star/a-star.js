@@ -54,7 +54,7 @@ function aStarPathSearch(graph, options) {
     find: find
   };
 
-  function find(fromId, toId) {
+  function find(fromId, toId, includeLinks = false) {
     var from = graph.getNode(fromId);
     if (!from) throw new Error('fromId is not defined in this graph: ' + fromId);
     var to = graph.getNode(toId);
@@ -85,7 +85,9 @@ function aStarPathSearch(graph, options) {
 
     while (openSet.length > 0) {
       cameFrom = openSet.pop();
-      if (goalReached(cameFrom, to)) return reconstructPath(cameFrom);
+      if (goalReached(cameFrom, to)) {
+        return includeLinks ? reconstructPath_withLinks(cameFrom) : reconstructPath(cameFrom) ;
+      }
 
       // no need to visit this node anymore
       cameFrom.closed = true;
@@ -122,6 +124,7 @@ function aStarPathSearch(graph, options) {
       otherSearchState.parent = cameFrom;
       otherSearchState.distanceToSource = tentativeDistance;
       otherSearchState.fScore = tentativeDistance + heuristic(otherSearchState.node, to);
+      cameFrom.link = link;
 
       openSet.updateItem(otherSearchState.heapIndex);
     }
@@ -138,6 +141,19 @@ function reconstructPath(searchState) {
 
   while (parent) {
     path.push(parent.node);
+    parent = parent.parent;
+  }
+
+  return path;
+}
+
+
+function reconstructPath_withLinks(searchState) {
+  var path = [[searchState.node, searchState.link]];
+  var parent = searchState.parent;
+
+  while (parent) {
+    path.push([parent.node, parent.link]);
     parent = parent.parent;
   }
 
