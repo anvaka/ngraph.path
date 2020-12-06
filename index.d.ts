@@ -15,8 +15,11 @@ declare module "ngraph.path" {
         distance?: (from: Node<NodeData>, to: Node<NodeData>, link: Link<LinkData>) => number
     }
 
+    /** 
+     * inlcudeLinks only works for a-star.js 
+    */
     interface PathFinder<NodeData> {
-        find: (from: NodeId, to: NodeId) => Node<NodeData>[]
+        find: (from: NodeId, to: NodeId, includeLinks?:boolean) => Node<NodeData>[]
     }
 
     export function aStar<NodeData, LinkData>(graph: Graph<NodeData, LinkData>, options?: PathFinderOptions<NodeData, LinkData>): PathFinder<NodeData>
