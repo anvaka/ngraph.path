@@ -53,7 +53,7 @@ test('it can track node id', (t) => {
       node.id = id;
     }
   })
-  t.equals(nodes[0].id, 0, 'id is set');
+  t.equal(nodes[0].id, 0, 'id is set');
   t.end();
 });
 
@@ -75,7 +75,7 @@ test('it initializes ids for multiple nodes', (t) => {
 
   for (var i = 0; i < nodes.length; ++i) {
     var current = nodes[i];
-    t.equals(current.id, i, 'id is initialized correctly');
+    t.equal(current.id, i, 'id is initialized correctly');
   }
   var prev = {v: Number.NEGATIVE_INFINITY};
   while (heap.length) {
@@ -99,8 +99,8 @@ test('it updates ids when popped', (t) => {
   });
 
   var popped = heap.pop();
-  t.equals(popped.id, 0, 'Popped from the top');
-  t.equals(heap.peek().id, 0, 'Element at the top of the heap has updated its id');
+  t.equal(popped.id, 0, 'Popped from the top');
+  t.equal(heap.peek().id, 0, 'Element at the top of the heap has updated its id');
 
   t.end();
 });
@@ -122,8 +122,8 @@ test('it can update node values', (t) => {
 
   heap.updateItem(lastItem.id);
   
-  t.equals(heap.peek().v, 1, 'First element was updated');
-  t.equals(heap.length, 3, 'Length is preserved')
+  t.equal(heap.peek().v, 1, 'First element was updated');
+  t.equal(heap.length, 3, 'Length is preserved')
 
   var prev = {v: Number.NEGATIVE_INFINITY};
   while (heap.length) {

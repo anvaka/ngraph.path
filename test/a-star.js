@@ -21,9 +21,9 @@ test('it can find weighted', t => {
   });
   let path = pathFinder.find('a', 'd');
 
-  t.equals(path[0].id, 'd', 'd is here');
-  t.equals(path[1].id, 'c', 'c is here');
-  t.equals(path[2].id, 'a', 'a is here');
+  t.equal(path[0].id, 'd', 'd is here');
+  t.equal(path[1].id, 'c', 'c is here');
+  t.equal(path[2].id, 'a', 'a is here');
   t.end();
 });
 
@@ -49,10 +49,10 @@ test('A* can find directed path', t => {
   });
   let path = pathFinder.find('a', 'e');
 
-  t.equals(path[0].id, 'e', 'e is here');
-  t.equals(path[1].id, 'd', 'd is here');
-  t.equals(path[2].id, 'c', 'c is here');
-  t.equals(path[3].id, 'a', 'a is here');
+  t.equal(path[0].id, 'e', 'e is here');
+  t.equal(path[1].id, 'd', 'd is here');
+  t.equal(path[2].id, 'c', 'c is here');
+  t.equal(path[3].id, 'a', 'a is here');
   t.end();
 });
 
@@ -77,10 +77,10 @@ test('A* greedy can find directed path', t => {
   });
   let path = pathFinder.find('a', 'e');
 
-  t.equals(path[0].id, 'e', 'e is here');
-  t.equals(path[1].id, 'd', 'd is here');
-  t.equals(path[2].id, 'c', 'c is here');
-  t.equals(path[3].id, 'a', 'a is here');
+  t.equal(path[0].id, 'e', 'e is here');
+  t.equal(path[1].id, 'd', 'd is here');
+  t.equal(path[2].id, 'c', 'c is here');
+  t.equal(path[3].id, 'a', 'a is here');
   t.end();
 });
 
@@ -121,9 +121,9 @@ test('it can use heuristic', t => {
   });
   let path = pathFinder.find('NYC', 'Washington');
 
-  t.equals(path[0].id, 'Washington', 'Washington is here');
-  t.equals(path[1].id, 'Philadelphia', 'Philadelphia is here');
-  t.equals(path[2].id, 'NYC', 'NYC is here');
+  t.equal(path[0].id, 'Washington', 'Washington is here');
+  t.equal(path[1].id, 'Philadelphia', 'Philadelphia is here');
+  t.equal(path[2].id, 'NYC', 'NYC is here');
   t.end();
 })
 
@@ -137,9 +137,9 @@ test('it can find path without any config', t => {
 
   var pathFinder = aStar(graph);
   let path = pathFinder.find('a', 'c');
-  t.equals(path[0].id, 'c', 'c is here');
-  t.equals(path[1].id, 'b', 'b is here');
-  t.equals(path[2].id, 'a', 'a is here');
+  t.equal(path[0].id, 'c', 'c is here');
+  t.equal(path[1].id, 'b', 'b is here');
+  t.equal(path[2].id, 'a', 'a is here');
 
   var pathFinderBi = aGreedy(graph);
   let foundNodes = new Set();
@@ -180,10 +180,10 @@ test('it can find paths', (t) => {
   });
 
   var path = pathFind.find('a', 'd')
-  t.equals(path.length, 3, 'Three nodes in path')
-  t.equals(path[0].id, 'd', 'd is here')
-  t.equals(path[1].id, 'b', 'b is here')
-  t.equals(path[2].id, 'a', 'a is here')
+  t.equal(path.length, 3, 'Three nodes in path')
+  t.equal(path[0].id, 'd', 'd is here')
+  t.equal(path[1].id, 'b', 'b is here')
+  t.equal(path[2].id, 'a', 'a is here')
 
   t.end();
 });
@@ -269,7 +269,7 @@ test('it finds path on simple graph', (t) => {
       var grid = asciiUtils.graphToTextGrid(graph);
       grid.drawPath(foundRoute);
 
-      t.equals(grid.toString(), expected, testCase.name + '. path found from ' + query.from + ' to ' + query.to);
+      t.equal(grid.toString(), expected, testCase.name + '. path found from ' + query.from + ' to ' + query.to);
     })
   })
 

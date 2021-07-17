@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build": "browserify index.js -s ngraphPath -o dist/ngraph.path.js && uglifyjs dist/ngraph.path.js -o dist/ngraph.path.min.js",
-    "test": "tap test/*.js"
+    "test": "tap --branches=70 --lines=80 --statements=80 --functions=80 test/*.js"
   },
   "keywords": [
     "ngraph",
@@ -25,7 +25,7 @@
     "browserify": "^16.5.1",
     "ngraph.fromdot": "^6.0.0",
     "ngraph.graph": "^19.1.0",
-    "tap": "^14.10.8",
+    "tap": "^15.0.9",
     "uglify-js": "^3.10.0"
   }
 }

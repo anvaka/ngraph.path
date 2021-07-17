@@ -18,9 +18,9 @@ test('it can find path', t => {
   });
   let path = pathFinder.find('a', 'd');
 
-  t.equals(path[0].id, 'd', 'd is here');
-  t.equals(path[1].id, 'c', 'c is here');
-  t.equals(path[2].id, 'a', 'a is here');
+  t.equal(path[0].id, 'd', 'd is here');
+  t.equal(path[1].id, 'c', 'c is here');
+  t.equal(path[2].id, 'a', 'a is here');
   t.end();
 });
 
@@ -46,9 +46,9 @@ test('it can find directed path', t => {
   });
   let path = pathFinder.find('a', 'e');
 
-  t.equals(path[0].id, 'e', 'e is here');
-  t.equals(path[1].id, 'd', 'd is here');
-  t.equals(path[2].id, 'c', 'c is here');
-  t.equals(path[3].id, 'a', 'a is here');
+  t.equal(path[0].id, 'e', 'e is here');
+  t.equal(path[1].id, 'd', 'd is here');
+  t.equal(path[2].id, 'c', 'c is here');
+  t.equal(path[3].id, 'a', 'a is here');
   t.end();
 });
