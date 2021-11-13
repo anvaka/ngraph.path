@@ -40,6 +40,9 @@ function aStarBi(graph, options) {
   // whether traversal should be considered over oriented graph.
   var oriented = options.oriented;
 
+  var blocked = options.blocked;
+  if (!blocked) blocked = defaultSettings.blocked;
+
   var heuristic = options.heuristic;
   if (!heuristic) heuristic = defaultSettings.heuristic;
 
@@ -179,6 +182,11 @@ function aStarBi(graph, options) {
 
       if (otherSearchState.closed) {
         // Already processed this node.
+        return;
+      }
+
+      if (blocked(otherSearchState.node, cameFrom.node, link)) {
+        // Path is blocked. Ignore this route
         return;
       }
 

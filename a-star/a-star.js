@@ -38,6 +38,9 @@ function aStarPathSearch(graph, options) {
   // whether traversal should be considered over oriented graph.
   var oriented = options.oriented;
 
+  var blocked = options.blocked;
+  if (!blocked) blocked = defaultSettings.blocked;
+
   var heuristic = options.heuristic;
   if (!heuristic) heuristic = defaultSettings.heuristic;
 
@@ -110,6 +113,11 @@ function aStarPathSearch(graph, options) {
         // Remember this node.
         openSet.push(otherSearchState);
         otherSearchState.open = 1;
+      }
+
+      if (blocked(otherNode, cameFrom.node, link)) {
+        // Path is blocked. Ignore this route
+        return;
       }
 
       var tentativeDistance = cameFrom.distanceToSource + distance(otherNode, cameFrom.node, link);
