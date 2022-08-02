@@ -2,7 +2,7 @@
 
 Fast path finding for arbitrary graphs. [Play with a demo](https://anvaka.github.io/ngraph.path.demo/) or [watch it](https://www.youtube.com/watch?v=hGeZuIEV6KU) on YouTube.
 
-[![demo](https://raw.githubusercontent.com/anvaka/ngraph.path/master/docs/seattle.gif)](https://anvaka.github.io/ngraph.path.demo/)
+[![demo](https://raw.githubusercontent.com/anvaka/ngraph.path/main/docs/seattle.gif)](https://anvaka.github.io/ngraph.path.demo/)
 
 If you want to learn how the demo was made, please refer to the [demo's source code](https://github.com/anvaka/ngraph.path.demo#ngraphpath-demo).
 I tried to describe it in great details.
@@ -28,17 +28,17 @@ globally optimal.
 There are a few things that contribute to the performance of this library.
 
 I'm using heap-based priority queue, built specifically for the path finding.
-I [modified a heap's](https://github.com/anvaka/ngraph.path/blob/master/a-star/NodeHeap.js) implementation,
+I [modified a heap's](https://github.com/anvaka/ngraph.path/blob/main/a-star/NodeHeap.js) implementation,
 so that changing priority of any element takes `O(lg n)` time.
 
 Each path finder opens many graph nodes during its exploration, which creates pressure
-on garbage collector. To avoid the pressure, I've created an [object pool](https://github.com/anvaka/ngraph.path/blob/master/a-star/nba/makeNBASearchStatePool.js),
+on garbage collector. To avoid the pressure, I've created an [object pool](https://github.com/anvaka/ngraph.path/blob/main/a-star/nba/makeNBASearchStatePool.js),
 which recycles nodes when possible.
 
 In general, the `A*` algorithm helps to converge to the optimal solution faster than
 Dijkstra, because it uses "hints" from the heuristic function. When search is performed
 in both directions (`source -> target` and `target -> source`), the convergence can be
-improved even more. The [NBA*](https://github.com/anvaka/ngraph.path/blob/master/a-star/nba/index.js) algorithm
+improved even more. The [NBA*](https://github.com/anvaka/ngraph.path/blob/main/a-star/nba/index.js) algorithm
 is a bi-directional path finder, that guarantees optimal shortest path. At the same time it
 removes balanced heuristic requirement. It also seem to be the fastest algorithm, among implemented 
 here *(NB: If you have suggestions how to improve this even further - please let me know!)*
@@ -100,7 +100,7 @@ graph.addLink('c', 'd', {weight: 5});
 graph.addLink('b', 'd', {weight: 10});
 ```
 
-![weighted](https://raw.githubusercontent.com/anvaka/ngraph.path/master/docs/weighted.png)
+![weighted](https://raw.githubusercontent.com/anvaka/ngraph.path/main/docs/weighted.png)
 
 We want to find a path with the smallest possible weight:
 
@@ -144,7 +144,7 @@ graph.addLink('NYC', 'Philadelphia');
 graph.addLink('Philadelphia', 'Washington');
 ```
 
-![guided](https://raw.githubusercontent.com/anvaka/ngraph.path/master/docs/guided.png)
+![guided](https://raw.githubusercontent.com/anvaka/ngraph.path/main/docs/guided.png)
 
 When we build the shortest path from NYC to Washington, we want to tell the pathfinder
 that it should prefer Philadelphia over Boston.
