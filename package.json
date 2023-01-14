@@ -25,7 +25,7 @@
     "browserify": "^16.5.1",
     "ngraph.fromdot": "^7.0.0",
     "ngraph.graph": "^20.0.0",
-    "tap": "^15.1.6",
+    "tap": "^16.3.0",
     "uglify-js": "^3.10.0"
   }
 }
