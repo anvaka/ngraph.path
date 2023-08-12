@@ -165,6 +165,9 @@ function aStarBi(graph, options) {
   // whether traversal should be considered over oriented graph.
   var oriented = options.oriented;
 
+  var blocked = options.blocked;
+  if (!blocked) blocked = defaultSettings.blocked;
+
   var heuristic = options.heuristic;
   if (!heuristic) heuristic = defaultSettings.heuristic;
 
@@ -307,6 +310,11 @@ function aStarBi(graph, options) {
         return;
       }
 
+      if (blocked(otherSearchState.node, cameFrom.node, link)) {
+        // Path is blocked. Ignore this route
+        return;
+      }
+
       if (canExit(otherSearchState, cameFrom)) {
         // this node was opened by alternative opener. The sets intersect now,
         // we found an optimal path, that goes through *this* node. However, there
@@ -394,6 +402,9 @@ function aStarPathSearch(graph, options) {
   // whether traversal should be considered over oriented graph.
   var oriented = options.oriented;
 
+  var blocked = options.blocked;
+  if (!blocked) blocked = defaultSettings.blocked;
+
   var heuristic = options.heuristic;
   if (!heuristic) heuristic = defaultSettings.heuristic;
 
@@ -468,6 +479,11 @@ function aStarPathSearch(graph, options) {
         otherSearchState.open = 1;
       }
 
+      if (blocked(otherNode, cameFrom.node, link)) {
+        // Path is blocked. Ignore this route
+        return;
+      }
+
       var tentativeDistance = cameFrom.distanceToSource + distance(otherNode, cameFrom.node, link);
       if (tentativeDistance >= otherSearchState.distanceToSource) {
         // This would only make our path longer. Ignore this route.
@@ -510,6 +526,7 @@ module.exports = {
   // Path search settings
   heuristic: blindHeuristic,
   distance: constantDistance,
+  blocked: neverBlocked,
   compareFScore: compareFScore,
   NO_PATH: NO_PATH,
 
@@ -530,6 +547,10 @@ function blindHeuristic(/* a, b */) {
 
 function constantDistance(/* a, b */) {
   return 1;
+}
+
+function neverBlocked(/* a, b, c */) {
+  return false;
 }
 
 function compareFScore(a, b) {
