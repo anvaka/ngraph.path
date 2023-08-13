@@ -27,6 +27,9 @@ module.exports.l1 = heuristics.l1;
  * @param {ngraph.graph} graph instance. See https://github.com/anvaka/ngraph.graph
  * 
  * @param {Object} options that configures search
+ * @param {Function(a, b, link)} options.blocked - a function that returns `true` if the link between 
+ * nodes `a` and `b` are blocked paths. This function is useful for temporarily blocking routes 
+ * while allowing the graph to be reused without rebuilding.
  * @param {Function(a, b)} options.heuristic - a function that returns estimated distance between
  * nodes `a` and `b`.  Defaults function returns 0, which makes this search equivalent to Dijkstra search.
  * @param {Function(a, b)} options.distance - a function that returns actual distance between two

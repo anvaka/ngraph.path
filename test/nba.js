@@ -24,6 +24,29 @@ test('it can find path', t => {
   t.end();
 });
 
+test('it can find path with blocked links', t => {
+  let graph = createGraph();
+
+  graph.addLink('a', 'b', {blocked: true});
+  graph.addLink('a', 'c', {blocked: false});
+  graph.addLink('c', 'd', {blocked: false});
+  graph.addLink('b', 'd', {blocked: false});
+
+
+  var pathFinder = nba(graph, {
+    blocked(a, b, link) {
+      return link.data.blocked;
+    }
+  });
+  let path = pathFinder.find('a', 'd');
+
+  t.equal(path[0].id, 'd', 'd is here');
+  t.equal(path[1].id, 'c', 'c is here');
+  t.equal(path[2].id, 'a', 'a is here');
+  t.end();
+});
+
+
 test('it can find directed path', t => {
   let graph = createGraph();
 

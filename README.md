@@ -13,12 +13,12 @@ I measured performance of this library on New York City roads graph (`733,844` e
 It was done by solving `250` random path finding problems. Each algorithm was solving
 the same set of problems. Table below shows required time to solve one problem.
 
-|                                        | Average | Median | Min | Max   | p90   | p99   |
-|----------------------------------------|---------|:------:|:---:|-------|-------|-------|
-|      A* greedy (suboptimal)            |   32ms  |  24ms  | 0ms | 179ms |  73ms | 136ms |
-|      NBA*                              |   44ms  |  34ms  | 0ms | 222ms | 107ms | 172ms |
-|      A*, unidirectional                |   55ms  |  38ms  | 0ms | 356ms | 123ms | 287ms |
-|      Dijkstra                          |  264ms  | 258ms  | 0ms | 782ms | 483ms | 631ms |
+|                        | Average | Median |  Min  | Max   | p90   | p99   |
+| ---------------------- | ------- | :----: | :---: | ----- | ----- | ----- |
+| A* greedy (suboptimal) | 32ms    |  24ms  |  0ms  | 179ms | 73ms  | 136ms |
+| NBA*                   | 44ms    |  34ms  |  0ms  | 222ms | 107ms | 172ms |
+| A*, unidirectional     | 55ms    |  38ms  |  0ms  | 356ms | 123ms | 287ms |
+| Dijkstra               | 264ms   | 258ms  |  0ms  | 782ms | 483ms | 631ms |
 
 "A* greedy" converged the fastest, however, as name implies the found path is not necessary
 globally optimal.
@@ -185,6 +185,47 @@ If you want the pathfinder to treat your graph as oriented - pass `oriented: tru
 let pathFinder = aStar(graph, {
   oriented: true
 });
+```
+
+## blocked paths
+
+In scenarios where a path might be temporarily blocked between two nodes a `blocked()` function
+may be supplied to resolve blocked routes during path finding.
+
+For example, train routes with service disruptions could be modelled as follows:
+
+``` js
+let createGraph = require('ngraph.graph');
+let graph = createGraph();
+
+// Our graph has cities:
+graph.addNode('NYC');
+graph.addNode('Philadelphia');
+graph.addNode('Baltimore');
+graph.addNode('Pittsburgh');
+graph.addNode('Washington');
+
+// and railroads:
+graph.addLink('NYC', 'Philadelphia', { disruption: false });
+graph.addLink('Philadelphia', 'Baltimore', { disruption: true });
+graph.addLink('Philadelphia', 'Pittsburgh', { disruption: false });
+graph.addLink('Pittsburgh', 'Washington', { disruption: false });
+graph.addLink('Baltimore', 'Washington', { disruption: false });
+```
+
+While the Philadelphia to Baltimore route is facing a service disruption, the alternative 
+route to Washington is via Pittsburgh. The following is an example `blocked()` function implementation
+that may be supplied to yield this result:
+
+``` js
+let path = require('ngraph.path');
+
+let pathFinder = path.aStar(graph, {
+  blocked(fromNode, toNode, link) {
+    return link.data.disruption;
+  },
+});
+let result = pathFinder.find('NYC', 'Washington');
 ```
 
 ## available finders
