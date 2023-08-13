@@ -1,9 +1,9 @@
 module.exports = nba;
 
-var NodeHeap = require("../NodeHeap");
-var heuristics = require("../heuristics");
-var defaultSettings = require("../defaultSettings.js");
-var makeNBASearchStatePool = require("./makeNBASearchStatePool.js");
+var NodeHeap = require('../NodeHeap');
+var heuristics = require('../heuristics');
+var defaultSettings = require('../defaultSettings.js');
+var makeNBASearchStatePool = require('./makeNBASearchStatePool.js');
 
 var NO_PATH = defaultSettings.NO_PATH;
 
@@ -13,13 +13,13 @@ module.exports.l1 = heuristics.l1;
 /**
  * Creates a new instance of pathfinder. A pathfinder has just one method:
  * `find(fromId, toId)`.
- *
- * This is implementation of the NBA* algorithm described in
- *
+ * 
+ * This is implementation of the NBA* algorithm described in 
+ * 
  *  "Yet another bidirectional algorithm for shortest paths" paper by Wim Pijls and Henk Post
- *
+ * 
  * The paper is available here: https://repub.eur.nl/pub/16100/ei2009-10.pdf
- *
+ * 
  * @param {ngraph.graph} graph instance. See https://github.com/anvaka/ngraph.graph
  * @param {Object} options that configures search
  * @param {Function(a, b, link)} options.blocked - a function that returns `true` if the link between 
@@ -31,7 +31,7 @@ module.exports.l1 = heuristics.l1;
  * which makes this search equivalent to Dijkstra search.
  * @param {Function(a, b)} options.distance - a function that returns actual distance between two
  * nodes `a` and `b`. By default this is set to return graph-theoretical distance (always 1);
- *
+ * 
  * @returns {Object} A pathfinder with single method `find()`.
  */
 function nba(graph, options) {
@@ -59,17 +59,16 @@ function nba(graph, options) {
      * @returns {Array} of nodes between `toId` and `fromId`. Empty array is returned
      * if no path is found.
      */
-    find: find,
+    find: find
   };
 
   function find(fromId, toId) {
     // I must apologize for the code duplication. This was the easiest way for me to
     // implement the algorithm fast.
     var from = graph.getNode(fromId);
-    if (!from)
-      throw new Error("fromId is not defined in this graph: " + fromId);
+    if (!from) throw new Error('fromId is not defined in this graph: ' + fromId);
     var to = graph.getNode(toId);
-    if (!to) throw new Error("toId is not defined in this graph: " + toId);
+    if (!to) throw new Error('toId is not defined in this graph: ' + toId);
 
     pool.reset();
 
@@ -78,7 +77,7 @@ function nba(graph, options) {
     // forward search and it runs from source node to target, while the other one
     // (backward search) runs from target to source.
 
-    // Everywhere where you see `1` it means it's for the forward search. `2` is for
+    // Everywhere where you see `1` it means it's for the forward search. `2` is for 
     // backward search.
 
     // For oriented graph path finding, we need to reverse the graph, so that
@@ -94,11 +93,11 @@ function nba(graph, options) {
     // These two heaps store nodes by their underestimated values.
     var open1Set = new NodeHeap({
       compare: defaultSettings.compareF1Score,
-      setNodeId: defaultSettings.setH1,
+      setNodeId: defaultSettings.setH1
     });
     var open2Set = new NodeHeap({
       compare: defaultSettings.compareF2Score,
-      setNodeId: defaultSettings.setH2,
+      setNodeId: defaultSettings.setH2
     });
 
     // This is where both searches will meet.
@@ -111,7 +110,7 @@ function nba(graph, options) {
     // If variable names like `f1`, `g1` are too confusing, please refer
     // to makeNBASearchStatePool.js file, which has detailed description.
     var startNode = pool.createNewState(from);
-    nodeState.set(fromId, startNode);
+    nodeState.set(fromId, startNode); 
     startNode.g1 = 0;
     var f1 = heuristic(from, to);
     startNode.f1 = f1;
@@ -122,7 +121,7 @@ function nba(graph, options) {
     endNode.g2 = 0;
     var f2 = f1; // they should agree originally
     endNode.f2 = f2;
-    open2Set.push(endNode);
+    open2Set.push(endNode)
 
     // the `cameFrom` variable is accessed by both searches, so that we can store parents.
     var cameFrom;
@@ -149,17 +148,14 @@ function nba(graph, options) {
 
       cameFrom.closed = true;
 
-      if (
-        cameFrom.f1 < lMin &&
-        cameFrom.g1 + f2 - heuristic(from, cameFrom.node) < lMin
-      ) {
+      if (cameFrom.f1 < lMin && (cameFrom.g1 + f2 - heuristic(from, cameFrom.node)) < lMin) {
         graph.forEachLinkedNode(cameFrom.node.id, forwardVisitor);
       }
 
       if (open1Set.length > 0) {
         // this will be used in reverse search
         f1 = open1Set.peek().f1;
-      }
+      } 
     }
 
     function reverseSearch() {
@@ -169,10 +165,7 @@ function nba(graph, options) {
       }
       cameFrom.closed = true;
 
-      if (
-        cameFrom.f2 < lMin &&
-        cameFrom.g2 + f1 - heuristic(cameFrom.node, to) < lMin
-      ) {
+      if (cameFrom.f2 < lMin && (cameFrom.g2 + f1 - heuristic(cameFrom.node, to)) < lMin) {
         graph.forEachLinkedNode(cameFrom.node.id, reverseVisitor);
       }
 
@@ -193,13 +186,11 @@ function nba(graph, options) {
 
       if (blocked(cameFrom.node, otherNode, link)) return;
 
-      var tentativeDistance =
-        cameFrom.g1 + distance(cameFrom.node, otherNode, link);
+      var tentativeDistance = cameFrom.g1 + distance(cameFrom.node, otherNode, link);
 
       if (tentativeDistance < otherSearchState.g1) {
         otherSearchState.g1 = tentativeDistance;
-        otherSearchState.f1 =
-          tentativeDistance + heuristic(otherSearchState.node, to);
+        otherSearchState.f1 = tentativeDistance + heuristic(otherSearchState.node, to);
         otherSearchState.p1 = cameFrom;
         if (otherSearchState.h1 < 0) {
           open1Set.push(otherSearchState);
@@ -208,7 +199,7 @@ function nba(graph, options) {
         }
       }
       var potentialMin = otherSearchState.g1 + otherSearchState.g2;
-      if (potentialMin < lMin) {
+      if (potentialMin < lMin) { 
         lMin = potentialMin;
         minNode = otherSearchState;
       }
@@ -225,13 +216,11 @@ function nba(graph, options) {
 
       if (blocked(cameFrom.node, otherNode, link)) return;
 
-      var tentativeDistance =
-        cameFrom.g2 + distance(cameFrom.node, otherNode, link);
+      var tentativeDistance = cameFrom.g2 + distance(cameFrom.node, otherNode, link);
 
       if (tentativeDistance < otherSearchState.g2) {
         otherSearchState.g2 = tentativeDistance;
-        otherSearchState.f2 =
-          tentativeDistance + heuristic(from, otherSearchState.node);
+        otherSearchState.f2 = tentativeDistance + heuristic(from, otherSearchState.node);
         otherSearchState.p2 = cameFrom;
         if (otherSearchState.h2 < 0) {
           open2Set.push(otherSearchState);
@@ -247,7 +236,7 @@ function nba(graph, options) {
     }
 
     function visitN2Oriented(otherNode, link) {
-      // we are going backwards, graph needs to be reversed.
+      // we are going backwards, graph needs to be reversed. 
       if (link.toId === cameFrom.node.id) return visitN2(otherNode, link);
     }
     function visitN1Oriented(otherNode, link) {
