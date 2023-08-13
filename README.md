@@ -13,12 +13,12 @@ I measured performance of this library on New York City roads graph (`733,844` e
 It was done by solving `250` random path finding problems. Each algorithm was solving
 the same set of problems. Table below shows required time to solve one problem.
 
-|                        | Average | Median |  Min  | Max   | p90   | p99   |
-| ---------------------- | ------- | :----: | :---: | ----- | ----- | ----- |
-| A* greedy (suboptimal) | 32ms    |  24ms  |  0ms  | 179ms | 73ms  | 136ms |
-| NBA*                   | 44ms    |  34ms  |  0ms  | 222ms | 107ms | 172ms |
-| A*, unidirectional     | 55ms    |  38ms  |  0ms  | 356ms | 123ms | 287ms |
-| Dijkstra               | 264ms   | 258ms  |  0ms  | 782ms | 483ms | 631ms |
+|                                        | Average | Median | Min | Max   | p90   | p99   |
+|----------------------------------------|---------|:------:|:---:|-------|-------|-------|
+|      A* greedy (suboptimal)            |   32ms  |  24ms  | 0ms | 179ms |  73ms | 136ms |
+|      NBA*                              |   44ms  |  34ms  | 0ms | 222ms | 107ms | 172ms |
+|      A*, unidirectional                |   55ms  |  38ms  | 0ms | 356ms | 123ms | 287ms |
+|      Dijkstra                          |  264ms  | 258ms  | 0ms | 782ms | 483ms | 631ms |
 
 "A* greedy" converged the fastest, however, as name implies the found path is not necessary
 globally optimal.
