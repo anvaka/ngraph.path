@@ -187,6 +187,47 @@ let pathFinder = aStar(graph, {
 });
 ```
 
+## blocked paths
+
+In scenarios where a path might be temporarily blocked between two nodes a `blocked()` function
+may be supplied to resolve blocked routes during path finding.
+
+For example, train routes with service disruptions could be modelled as follows:
+
+``` js
+let createGraph = require('ngraph.graph');
+let graph = createGraph();
+
+// Our graph has cities:
+graph.addNode('NYC');
+graph.addNode('Philadelphia');
+graph.addNode('Baltimore');
+graph.addNode('Pittsburgh');
+graph.addNode('Washington');
+
+// and railroads:
+graph.addLink('NYC', 'Philadelphia', { disruption: false });
+graph.addLink('Philadelphia', 'Baltimore', { disruption: true });
+graph.addLink('Philadelphia', 'Pittsburgh', { disruption: false });
+graph.addLink('Pittsburgh', 'Washington', { disruption: false });
+graph.addLink('Baltimore', 'Washington', { disruption: false });
+```
+
+While the Philadelphia to Baltimore route is facing a service disruption, the alternative 
+route to Washington is via Pittsburgh. The following is an example `blocked()` function implementation
+that may be supplied to yield this result:
+
+``` js
+let path = require('ngraph.path');
+
+let pathFinder = path.aStar(graph, {
+  blocked(fromNode, toNode, link) {
+    return link.data.disruption;
+  },
+});
+let result = pathFinder.find('NYC', 'Washington');
+```
+
 ## available finders
 
 The library implements a few A* based path finders:
