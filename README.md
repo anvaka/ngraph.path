@@ -23,6 +23,8 @@ the same set of problems. Table below shows required time to solve one problem.
 "A* greedy" converged the fastest, however, as name implies the found path is not necessary
 globally optimal.
 
+[Source code for performance measurements](https://github.com/anvaka/ngraph.path.demo/blob/main/measurePerformance.js)
+
 ## Why is it fast?
 
 There are a few things that contribute to the performance of this library.
