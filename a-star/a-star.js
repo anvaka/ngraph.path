@@ -30,7 +30,7 @@ module.exports.l1 = heuristics.l1;
  * nodes `a` and `b`. This function should never overestimate actual distance between two
  * nodes (otherwise the found path will not be the shortest). Defaults function returns 0,
  * which makes this search equivalent to Dijkstra search.
- * @param {Function(a, b)} options.distance - a function that returns actual distance between two
+ * @param {Function(a, b, c)} options.distance - a function that returns actual distance between two
  * nodes `a` and `b`. By default this is set to return graph-theoretical distance (always 1);
  * @param {Boolean} options.oriented - whether graph should be considered oriented or not.
  * 
@@ -123,7 +123,7 @@ function aStarPathSearch(graph, options) {
         return;
       }
 
-      var tentativeDistance = cameFrom.distanceToSource + distance(otherNode, cameFrom.node, link);
+      var tentativeDistance = cameFrom.distanceToSource + distance(otherNode, cameFrom.node, link, cameFrom.parent && cameFrom.parent.node);
       if (tentativeDistance >= otherSearchState.distanceToSource) {
         // This would only make our path longer. Ignore this route.
         return;
