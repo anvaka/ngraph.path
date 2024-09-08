@@ -32,7 +32,7 @@ module.exports.l1 = heuristics.l1;
  * while allowing the graph to be reused without rebuilding.
  * @param {Function(a, b)} options.heuristic - a function that returns estimated distance between
  * nodes `a` and `b`.  Defaults function returns 0, which makes this search equivalent to Dijkstra search.
- * @param {Function(a, b)} options.distance - a function that returns actual distance between two
+ * @param {Function(a, b, link, parent)} options.distance - a function that returns actual distance between two
  * nodes `a` and `b`. By default this is set to return graph-theoretical distance (always 1);
  * @param {Boolean} options.oriented - whether graph should be considered oriented or not.
  * 
@@ -164,7 +164,7 @@ function aStarBi(graph, options) {
     function reconstructBiDirectionalPath(a, b) {
       var pathOfNodes = [];
       var aParent = a;
-      while(aParent) {
+      while (aParent) {
         pathOfNodes.push(aParent.node);
         aParent = aParent.parent;
       }
@@ -208,7 +208,7 @@ function aStarBi(graph, options) {
         return;
       }
 
-      var tentativeDistance = cameFrom.distanceToSource + distance(otherSearchState.node, cameFrom.node, link);
+      var tentativeDistance = cameFrom.distanceToSource + distance(otherSearchState.node, cameFrom.node, link, cameFrom.parent && cameFrom.parent.node);
 
       if (tentativeDistance >= otherSearchState.distanceToSource) {
         // This would only make our path longer. Ignore this route.
