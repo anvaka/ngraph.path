@@ -12,7 +12,7 @@ declare module "ngraph.path" {
         oriented?: boolean
         quitFast?: boolean
         heuristic?: (from: Node<NodeData>, to: Node<NodeData>) => number
-        distance?: (from: Node<NodeData>, to: Node<NodeData>, link: Link<LinkData>) => number
+        distance?: (from: Node<NodeData>, to: Node<NodeData>, link: Link<LinkData>, parent: Node<NodeData> | null) => number
         blocked?: (from: Node<NodeData>, to: Node<NodeData>, link: Link<LinkData>) => boolean
     }
 
