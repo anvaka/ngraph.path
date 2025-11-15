@@ -65,7 +65,7 @@ npm i ngraph.path
 Or download from CDN:
 
 ``` html
-<script src="https://unpkg.com/ngraph.path@1.5.0/dist/ngraph.path.umd.js"></script>
+<script src="https://unpkg.com/ngraph.path@1.6.0/dist/ngraph.path.umd.js"></script>
 ```
 
 If you download from CDN the library will be available under `ngraphPath` global name.
