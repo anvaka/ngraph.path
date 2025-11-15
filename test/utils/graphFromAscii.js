@@ -1,13 +1,9 @@
-var createGraph = require('ngraph.graph');
+import createGraph from 'ngraph.graph';
 
 var EMPTY_CELL = '.'
 var WALL = '@'
 
-module.exports = {
-  graphFromTextArray, 
-  graphToTextGrid,
-  nodeId
-};
+export { graphFromTextArray, graphToTextGrid, nodeId };
 
 function graphFromTextArray(lines) {
   var graph = createGraph({uniqueLinkIds: false});

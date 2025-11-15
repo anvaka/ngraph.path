@@ -1,14 +1,9 @@
-module.exports = nba;
-
-var NodeHeap = require('../NodeHeap');
-var heuristics = require('../heuristics');
-var defaultSettings = require('../defaultSettings.js');
-var makeNBASearchStatePool = require('./makeNBASearchStatePool.js');
+import NodeHeap from '../NodeHeap.js';
+import * as heuristics from '../heuristics.js';
+import defaultSettings from '../defaultSettings.js';
+import makeNBASearchStatePool from './makeNBASearchStatePool.js';
 
 var NO_PATH = defaultSettings.NO_PATH;
-
-module.exports.l2 = heuristics.l2;
-module.exports.l1 = heuristics.l1;
 
 /**
  * Creates a new instance of pathfinder. A pathfinder has just one method:
@@ -245,6 +240,11 @@ function nba(graph, options) {
     }
   }
 }
+
+nba.l2 = heuristics.l2;
+nba.l1 = heuristics.l1;
+
+export default nba;
 
 function reconstructPath(searchState) {
   if (!searchState) return NO_PATH;

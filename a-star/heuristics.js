@@ -1,7 +1,4 @@
-module.exports = {
-  l2: l2,
-  l1: l1
-};
+export { l2, l1 };
 
 /**
  * Euclid distance (l2 norm);

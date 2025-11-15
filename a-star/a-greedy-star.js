@@ -3,19 +3,14 @@
  * This finder does not necessary finds the shortest path. The path
  * that it finds is very close to the shortest one. It is very fast though.
  */
-module.exports = aStarBi;
-
-var NodeHeap = require('./NodeHeap');
-var makeSearchStatePool = require('./makeSearchStatePool');
-var heuristics = require('./heuristics');
-var defaultSettings = require('./defaultSettings');
+import NodeHeap from './NodeHeap.js';
+import makeSearchStatePool from './makeSearchStatePool.js';
+import * as heuristics from './heuristics.js';
+import defaultSettings from './defaultSettings.js';
 
 var BY_FROM = 1;
 var BY_TO = 2;
 var NO_PATH = defaultSettings.NO_PATH;
-
-module.exports.l2 = heuristics.l2;
-module.exports.l1 = heuristics.l1;
 
 /**
  * Creates a new instance of pathfinder. A pathfinder has just one method:
@@ -238,3 +233,8 @@ function aStarBi(graph, options) {
     }
   }
 }
+
+aStarBi.l2 = heuristics.l2;
+aStarBi.l1 = heuristics.l1;
+
+export default aStarBi;

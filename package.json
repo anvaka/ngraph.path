@@ -2,10 +2,16 @@
   "name": "ngraph.path",
   "version": "1.5.0",
   "description": "Path finding in a graph",
-  "main": "index.js",
+  "type": "module",
+  "main": "dist/ngraph.path.umd.js",
+  "types": "index.d.ts",
+  "jsdelivr": "dist/ngraph.path.umd.js",
+  "unpkg": "dist/ngraph.path.umd.js",
   "scripts": {
-    "build": "browserify index.js -s ngraphPath -o dist/ngraph.path.js && uglifyjs dist/ngraph.path.js -o dist/ngraph.path.min.js",
-    "test": "tap --branches=70 --lines=80 --statements=80 --functions=80 test/*.js"
+    "build": "vite build",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "coverage": "vitest run --coverage"
   },
   "keywords": [
     "ngraph",
@@ -22,10 +28,18 @@
     "url": "https://github.com/anvaka/ngraph.path"
   },
   "devDependencies": {
-    "browserify": "^16.5.1",
-    "ngraph.fromdot": "^7.0.0",
+    "@vitest/coverage-v8": "^3.2.4",
     "ngraph.graph": "^20.0.0",
-    "tap": "^16.3.0",
-    "uglify-js": "^3.10.0"
-  }
+    "vite": "^7.1.4",
+    "vitest": "^3.2.4"
+  },
+  "exports": {
+    ".": {
+      "types": "./index.d.ts",
+      "import": "./index.js",
+      "require": "./dist/ngraph.path.umd.js"
+    },
+    "./dist/*": "./dist/*"
+  },
+  "sideEffects": false
 }

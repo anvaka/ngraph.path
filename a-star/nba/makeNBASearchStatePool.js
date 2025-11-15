@@ -1,5 +1,3 @@
-module.exports = makeNBASearchStatePool;
-
 /**
  * Creates new instance of NBASearchState. The instance stores information
  * about search state, and is used by NBA* algorithm.
@@ -67,7 +65,7 @@ function NBASearchState(node) {
  * garbage collector. This class helps us to recycle path-finding nodes and significantly
  * reduces the search time (~20% faster than without it).
  */
-function makeNBASearchStatePool() {
+export default function makeNBASearchStatePool() {
   var currentInCache = 0;
   var nodeCache = [];
 

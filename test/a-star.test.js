@@ -1,7 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { aStar, aGreedy } from '../index.js';
 import createGraph from 'ngraph.graph';
-import fromDot from 'ngraph.fromdot';
 import { graphFromTextArray, graphToTextGrid } from './utils/graphFromAscii.js';
 
 describe('aStar family', () => {
@@ -113,12 +112,7 @@ describe('aStar family', () => {
   });
 
   it('works with default config', () => {
-    const graph = fromDot(`digraph G {
-      a -> b
-      b -> c
-      b -> d
-      c -> d
-    }`);
+    const graph = makeDiamondGraph();
 
     const greedy = aGreedy(graph);
     const shortest = aStar(graph);
@@ -131,12 +125,7 @@ describe('aStar family', () => {
   });
 
   it('supports custom heuristic utilities', () => {
-    const graph = fromDot(`digraph G {
-      a -> b
-      b -> c
-      b -> d
-      c -> d
-    }`);
+    const graph = makeDiamondGraph();
 
     graph.getNode('a').data = { x: 0, y: 0 };
     graph.getNode('b').data = { x: 2, y: 0 };
@@ -260,4 +249,13 @@ function manhattanFromData() {
   function distance(from, to) {
     return aStar.l1(from.data, to.data);
   }
+}
+
+function makeDiamondGraph() {
+  const graph = createGraph();
+  graph.addLink('a', 'b');
+  graph.addLink('b', 'c');
+  graph.addLink('b', 'd');
+  graph.addLink('c', 'd');
+  return graph;
 }

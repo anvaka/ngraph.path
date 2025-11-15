@@ -5,17 +5,12 @@
  * g(n) is actual distance from source node to `n`, and
  * h(n) is heuristic distance from `n` to target node.
  */
-module.exports = aStarPathSearch;
-
-var NodeHeap = require('./NodeHeap');
-var makeSearchStatePool = require('./makeSearchStatePool');
-var heuristics = require('./heuristics');
-var defaultSettings = require('./defaultSettings.js');
+import NodeHeap from './NodeHeap.js';
+import makeSearchStatePool from './makeSearchStatePool.js';
+import * as heuristics from './heuristics.js';
+import defaultSettings from './defaultSettings.js';
 
 var NO_PATH = defaultSettings.NO_PATH;
-
-module.exports.l2 = heuristics.l2;
-module.exports.l1 = heuristics.l1;
 
 /**
  * Creates a new instance of pathfinder. A pathfinder has just one method:
@@ -138,6 +133,11 @@ function aStarPathSearch(graph, options) {
     }
   }
 }
+
+aStarPathSearch.l2 = heuristics.l2;
+aStarPathSearch.l1 = heuristics.l1;
+
+export default aStarPathSearch;
 
 function goalReached(searchState, targetNode) {
   return searchState.node === targetNode;

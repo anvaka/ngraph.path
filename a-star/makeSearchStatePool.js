@@ -21,7 +21,7 @@ function NodeSearchState(node) {
   this.heapIndex = -1;
 };
 
-function makeSearchStatePool() {
+export default function makeSearchStatePool() {
   var currentInCache = 0;
   var nodeCache = [];
 
@@ -61,4 +61,3 @@ function makeSearchStatePool() {
     return cached;
   }
 }
-module.exports = makeSearchStatePool;

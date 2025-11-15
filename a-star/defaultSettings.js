@@ -1,9 +1,9 @@
 // We reuse instance of array, but we trie to freeze it as well,
 // so that consumers don't modify it. Maybe it's a bad idea.
-var NO_PATH = [];
+const NO_PATH = [];
 if (typeof Object.freeze === 'function') Object.freeze(NO_PATH);
 
-module.exports = {
+const defaultSettings = {
   // Path search settings
   heuristic: blindHeuristic,
   distance: constantDistance,
@@ -19,7 +19,9 @@ module.exports = {
   setH2: setH2,
   compareF1Score: compareF1Score,
   compareF2Score: compareF2Score,
-}
+};
+
+export default defaultSettings;
 
 function blindHeuristic(/* a, b */) {
   // blind heuristic makes this search equal to plain Dijkstra path search.

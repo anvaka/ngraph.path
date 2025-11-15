@@ -5,10 +5,8 @@
  * Adapted for PathFinding needs by @anvaka
  * Copyright (c) 2017, Andrei Kashcha
  */
-module.exports = NodeHeap;
-
-function NodeHeap(data, options) {
-  if (!(this instanceof NodeHeap)) return new NodeHeap(data, options);
+export default function NodeHeap(data, options) {
+  if (!new.target) return new NodeHeap(data, options);
 
   if (!Array.isArray(data)) {
     // assume first argument is our config object;

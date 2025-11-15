@@ -65,7 +65,7 @@ npm i ngraph.path
 Or download from CDN:
 
 ``` html
-<script src='https://unpkg.com/ngraph.path@1.3.1/dist/ngraph.path.min.js'></script>
+<script src="https://unpkg.com/ngraph.path@1.5.0/dist/ngraph.path.umd.js"></script>
 ```
 
 If you download from CDN the library will be available under `ngraphPath` global name.
@@ -242,6 +242,14 @@ let nbaFinder = path.nba(graph, options);
 
 Each finder has just one method `find(fromNodeId, toNodeId)`, which returns array of
 nodes, that belongs to the found path. If no path exists - empty array is returned.
+
+## development
+
+```bash
+npm install
+npm test
+npm run build
+```
 
 # Which finder to choose?
 
