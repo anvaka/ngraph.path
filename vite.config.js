@@ -5,8 +5,9 @@ export default defineConfig({
     lib: {
       entry: 'index.js',
       name: 'ngraphPath',
-      fileName: (format) => `ngraph.path.${format}.js`,
-      formats: ['umd', 'es'],
+      fileName: (format) =>
+        format === 'cjs' ? 'ngraph.path.cjs' : `ngraph.path.${format}.js`,
+      formats: ['umd', 'es', 'cjs'],
     },
     rollupOptions: {
       output: {

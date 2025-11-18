@@ -3,7 +3,8 @@
   "version": "1.6.0",
   "description": "Path finding in a graph",
   "type": "module",
-  "main": "dist/ngraph.path.umd.js",
+  "main": "dist/ngraph.path.cjs",
+  "module": "dist/ngraph.path.es.js",
   "types": "index.d.ts",
   "jsdelivr": "dist/ngraph.path.umd.js",
   "unpkg": "dist/ngraph.path.umd.js",
@@ -36,8 +37,9 @@
   "exports": {
     ".": {
       "types": "./index.d.ts",
-      "import": "./index.js",
-      "require": "./dist/ngraph.path.umd.js"
+      "import": "./dist/ngraph.path.es.js",
+      "require": "./dist/ngraph.path.cjs",
+      "default": "./dist/ngraph.path.es.js"
     },
     "./dist/*": "./dist/*"
   },
