@@ -1,6 +1,6 @@
 {
   "name": "ngraph.path",
-  "version": "1.6.0",
+  "version": "1.6.1",
   "description": "Path finding in a graph",
   "type": "module",
   "main": "dist/ngraph.path.cjs",
